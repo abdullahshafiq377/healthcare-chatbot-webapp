@@ -10,8 +10,7 @@ import animationData from "@/assets/animations/heartbeat.json";
 export default function Home() {
   return (
     <>
-      <section
-        className="flex absolute w-full px-6 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 py-8 md:py-10 sm:w-full sm:max-w-none z-20">
+      <section className="flex absolute w-full px-6 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 py-8 md:py-10 sm:w-full sm:max-w-none z-20">
         <div className="inline-block  text-center justify-center">
           <div
             className="flex justify-center items-center mx-auto h-16 w-16 bg-gradient-to-t from-[#FF1CF7]/30 to-[#b249f8]/30
@@ -26,7 +25,7 @@ export default function Home() {
           <span
             className={title({
               color: "violet",
-              size: "lg"
+              size: "lg",
             })}
           >
             Health&nbsp;
@@ -47,7 +46,7 @@ export default function Home() {
               color: "secondary",
               radius: "full",
               variant: "shadow",
-              size: "lg"
+              size: "lg",
             })}
             href="/sign-up?userType=professional"
           >
@@ -58,7 +57,7 @@ export default function Home() {
             className={buttonStyles({
               variant: "bordered",
               radius: "full",
-              size: "lg"
+              size: "lg",
             })}
             href="/sign-up"
           >

@@ -8,6 +8,7 @@ import { Link } from "@heroui/link";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import clsx from "clsx";
 import { Divider } from "@heroui/divider";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 import bgImage from "@/assets/Gradient Background 1.png";
 import { title } from "@/components/primitives";
@@ -19,6 +20,9 @@ interface Errors {
 export default function SigninPage() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   // Real-time password validation
   const getPasswordError = (value: string): string | null => {
@@ -92,7 +96,7 @@ export default function SigninPage() {
       <div className="z-20 w-full px-4 sm:px-0 sm:max-w-sm flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <Card
           isBlurred
-          className="border-none bg-background/40 dark:bg-default-100/80"
+          className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="py-6 px-5">
             <div className="flex flex-col gap-4 w-full text-center justify-center">
@@ -139,6 +143,28 @@ export default function SigninPage() {
                     inputWrapper: "bg-white dark:bg-gray-950",
                     errorMessage: "text-left",
                   }}
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                    >
+                      {isVisible ? (
+                        <EyeSlashIcon
+                          className="text-default-400 pointer-events-none"
+                          height={20}
+                          width={20}
+                        />
+                      ) : (
+                        <EyeIcon
+                          className="text-default-400 pointer-events-none"
+                          height={20}
+                          width={20}
+                        />
+                      )}
+                    </button>
+                  }
                   errorMessage={errors?.password || undefined}
                   isInvalid={Boolean(errors?.password)}
                   label="Password"
@@ -146,7 +172,7 @@ export default function SigninPage() {
                   name="password"
                   placeholder="Enter your password"
                   radius="full"
-                  type="password"
+                  type={isVisible ? "text" : "password"}
                   value={credentials.password}
                   variant="bordered"
                   onValueChange={(value) =>

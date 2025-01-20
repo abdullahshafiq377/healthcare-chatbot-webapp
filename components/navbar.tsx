@@ -1,3 +1,4 @@
+"use client";
 import {
   Navbar as HeroUINavbar,
   NavbarBrand,
@@ -5,18 +6,22 @@ import {
   NavbarItem,
   NavbarMenu,
   NavbarMenuItem,
-  NavbarMenuToggle
+  NavbarMenuToggle,
 } from "@heroui/navbar";
 import { Link } from "@heroui/link";
 import { button as buttonStyles, link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 
 export const Navbar = () => {
+  const pathname = usePathname();
+
+  console.log(pathname);
   // const searchInput = (
   //   <Input
   //     aria-label="Search"
@@ -58,7 +63,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  item.href === pathname && "text-secondary font-medium",
                 )}
                 color="foreground"
                 href={item.href}
@@ -91,7 +96,7 @@ export const Navbar = () => {
             className={buttonStyles({
               color: "secondary",
               radius: "full",
-              variant: "shadow"
+              variant: "shadow",
             })}
             href="/sign-in"
           >
@@ -122,7 +127,7 @@ export const Navbar = () => {
           className={buttonStyles({
             color: "secondary",
             radius: "full",
-            variant: "shadow"
+            variant: "shadow",
           })}
           href="/sign-in"
         >
@@ -137,13 +142,7 @@ export const Navbar = () => {
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
+                color={item.href === pathname ? "secondary" : "foreground"}
                 href={item.href}
                 size="lg"
               >

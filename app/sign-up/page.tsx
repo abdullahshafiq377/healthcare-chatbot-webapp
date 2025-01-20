@@ -9,11 +9,16 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import clsx from "clsx";
 import { Link } from "@heroui/link";
+import {
+  BriefcaseIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  UserIcon,
+} from "@heroicons/react/24/solid";
+import { useSearchParams } from "next/navigation";
 
 import bgImage from "@/assets/Gradient Background 1.png";
 import { title } from "@/components/primitives";
-import { BriefcaseIcon, UserIcon } from "@heroicons/react/24/solid";
-import { useSearchParams } from "next/navigation";
 
 interface Errors {
   [key: string]: string | undefined;
@@ -34,9 +39,12 @@ export default function SignupPage() {
     email: "",
     password: "",
     name: "",
-    profession: ""
+    profession: "",
   });
   const [errors, setErrors] = useState<Errors>({});
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   // Real-time password validation
   const getPasswordError = (value: string): string | null => {
@@ -105,15 +113,13 @@ export default function SignupPage() {
           src={bgImage.src}
         />
       </div>
-      <div
-        className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <Card
           isBlurred
-          className="border-none bg-background/40 dark:bg-default-100/80"
+          className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="px-5 pt-6">
-            <div
-              className="flex flex-col gap-4 w-full text-center justify-center">
+            <div className="flex flex-col gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>Join us today!</h1>
               <h2 className="text-md">
                 Create your account to start your healthcare journey.
@@ -129,21 +135,22 @@ export default function SignupPage() {
               variant="light"
               onSelectionChange={(key) => setUsertype(key as string)}
             >
-              <Tab key="customer" title={
-                <div className="flex items-center space-x-2">
-                  <UserIcon height={16} width={16} />
-                  <span>Customer</span>
-                </div>
-              }>
-                <Form
-                  className="w-full justify-center items-center space-y-4"
-                >
+              <Tab
+                key="customer"
+                title={
+                  <div className="flex items-center space-x-2">
+                    <UserIcon height={16} width={16} />
+                    <span>Customer</span>
+                  </div>
+                }
+              >
+                <Form className="w-full justify-center items-center space-y-4">
                   <div className="flex flex-col gap-4 w-full">
                     <Input
                       isRequired
                       classNames={{
                         inputWrapper: "bg-white dark:bg-gray-950",
-                        errorMessage: "text-left"
+                        errorMessage: "text-left",
                       }}
                       errorMessage={errors.name}
                       isInvalid={Boolean(errors?.name)}
@@ -158,7 +165,7 @@ export default function SignupPage() {
                       onValueChange={(value) =>
                         setCredentials((prevState) => ({
                           ...prevState,
-                          name: value
+                          name: value,
                         }))
                       }
                     />
@@ -167,7 +174,7 @@ export default function SignupPage() {
                       isRequired
                       classNames={{
                         inputWrapper: "bg-white dark:bg-gray-950",
-                        errorMessage: "text-left"
+                        errorMessage: "text-left",
                       }}
                       errorMessage={errors.email}
                       isInvalid={Boolean(errors?.email)}
@@ -182,7 +189,7 @@ export default function SignupPage() {
                       onValueChange={(value) =>
                         setCredentials((prevState) => ({
                           ...prevState,
-                          email: value
+                          email: value,
                         }))
                       }
                     />
@@ -191,8 +198,30 @@ export default function SignupPage() {
                       isRequired
                       classNames={{
                         inputWrapper: "bg-white dark:bg-gray-950",
-                        errorMessage: "text-left"
+                        errorMessage: "text-left",
                       }}
+                      endContent={
+                        <button
+                          aria-label="toggle password visibility"
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={toggleVisibility}
+                        >
+                          {isVisible ? (
+                            <EyeSlashIcon
+                              className="text-default-400 pointer-events-none"
+                              height={20}
+                              width={20}
+                            />
+                          ) : (
+                            <EyeIcon
+                              className="text-default-400 pointer-events-none"
+                              height={20}
+                              width={20}
+                            />
+                          )}
+                        </button>
+                      }
                       errorMessage={errors?.password || undefined}
                       isInvalid={Boolean(errors?.password)}
                       label="Password"
@@ -200,35 +229,36 @@ export default function SignupPage() {
                       name="password"
                       placeholder="Enter your password"
                       radius="full"
-                      type="password"
+                      type={isVisible ? "text" : "password"}
                       value={credentials.password}
                       variant="bordered"
                       onValueChange={(value) =>
                         setCredentials((prevState) => ({
                           ...prevState,
-                          password: value
+                          password: value,
                         }))
                       }
                     />
                   </div>
                 </Form>
               </Tab>
-              <Tab key="professional" title={
-                <div className="flex items-center space-x-2">
-                  <BriefcaseIcon height={16} width={16} />
-                  <span>Professional</span>
-                </div>
-              }>
-                <Form
-                  className="w-full justify-center items-center space-y-4"
-                >
+              <Tab
+                key="professional"
+                title={
+                  <div className="flex items-center space-x-2">
+                    <BriefcaseIcon height={16} width={16} />
+                    <span>Professional</span>
+                  </div>
+                }
+              >
+                <Form className="w-full justify-center items-center space-y-4">
                   <div className="flex flex-col gap-4 w-full">
                     <div className="flex gap-4 w-full">
                       <Input
                         isRequired
                         classNames={{
                           inputWrapper: "bg-white dark:bg-gray-950",
-                          errorMessage: "text-left"
+                          errorMessage: "text-left",
                         }}
                         errorMessage={errors.name}
                         isInvalid={Boolean(errors?.name)}
@@ -243,7 +273,7 @@ export default function SignupPage() {
                         onValueChange={(value) =>
                           setCredentials((prevState) => ({
                             ...prevState,
-                            name: value
+                            name: value,
                           }))
                         }
                       />
@@ -252,7 +282,7 @@ export default function SignupPage() {
                         isRequired
                         classNames={{
                           inputWrapper: "bg-white dark:bg-gray-950",
-                          errorMessage: "text-left"
+                          errorMessage: "text-left",
                         }}
                         errorMessage={errors.profession}
                         isInvalid={Boolean(errors?.profession)}
@@ -267,18 +297,17 @@ export default function SignupPage() {
                         onValueChange={(value) =>
                           setCredentials((prevState) => ({
                             ...prevState,
-                            profession: value
+                            profession: value,
                           }))
                         }
                       />
                     </div>
 
-
                     <Input
                       isRequired
                       classNames={{
                         inputWrapper: "bg-white dark:bg-gray-950",
-                        errorMessage: "text-left"
+                        errorMessage: "text-left",
                       }}
                       errorMessage={errors.email}
                       isInvalid={Boolean(errors?.email)}
@@ -293,7 +322,7 @@ export default function SignupPage() {
                       onValueChange={(value) =>
                         setCredentials((prevState) => ({
                           ...prevState,
-                          email: value
+                          email: value,
                         }))
                       }
                     />
@@ -302,8 +331,30 @@ export default function SignupPage() {
                       isRequired
                       classNames={{
                         inputWrapper: "bg-white dark:bg-gray-950",
-                        errorMessage: "text-left"
+                        errorMessage: "text-left",
                       }}
+                      endContent={
+                        <button
+                          aria-label="toggle password visibility"
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={toggleVisibility}
+                        >
+                          {isVisible ? (
+                            <EyeSlashIcon
+                              className="text-default-400 pointer-events-none"
+                              height={20}
+                              width={20}
+                            />
+                          ) : (
+                            <EyeIcon
+                              className="text-default-400 pointer-events-none"
+                              height={20}
+                              width={20}
+                            />
+                          )}
+                        </button>
+                      }
                       errorMessage={errors?.password || undefined}
                       isInvalid={Boolean(errors?.password)}
                       label="Password"
@@ -311,13 +362,13 @@ export default function SignupPage() {
                       name="password"
                       placeholder="Enter your password"
                       radius="full"
-                      type="password"
+                      type={isVisible ? "text" : "password"}
                       value={credentials.password}
                       variant="bordered"
                       onValueChange={(value) =>
                         setCredentials((prevState) => ({
                           ...prevState,
-                          password: value
+                          password: value,
                         }))
                       }
                     />

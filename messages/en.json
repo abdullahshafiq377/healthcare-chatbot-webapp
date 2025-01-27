@@ -1,0 +1,34 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "chat": "Chat",
+    "signIn": "Sign in"
+  },
+  "HomePage": {
+    "title": "Your Health Made Smarter with AI.",
+    "subtitle": "Instant answers, personalized care, always available.",
+    "button": "Register now!"
+  },
+  "SignInPage": {
+    "title": "Welcome Back!",
+    "subtitle": "Sign in to access your personalized healthcare assistant.",
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "newAccount": "Create a new account?"
+    },
+    "button": "Sign in"
+  },
+  "SignUpPage": {
+    "title": "Join us today!",
+    "subtitle": "Create your account to start your healthcare journey.",
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "alreadyAccount": "Already have an account?"
+    },
+    "button": "Sign up"
+  }
+}

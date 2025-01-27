@@ -4,20 +4,23 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import React, { useState } from "react";
-import { Link } from "@heroui/link";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import clsx from "clsx";
 import { Divider } from "@heroui/divider";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { useTranslations } from "next-intl";
 
 import bgImage from "@/assets/Gradient Background 1.png";
 import { title } from "@/components/primitives";
+import { Link } from "@/i18n/routing";
 
 interface Errors {
   [key: string]: string | undefined;
 }
 
 export default function SigninPage() {
+  const t = useTranslations("SignInPage");
+
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = React.useState(false);
@@ -100,10 +103,8 @@ export default function SigninPage() {
         >
           <CardHeader className="py-6 px-5">
             <div className="flex flex-col gap-4 w-full text-center justify-center">
-              <h1 className={clsx(title({ size: "sm" }))}>Welcome Back!</h1>
-              <h2 className="text-md">
-                Sign in to access your personalized healthcare assistant.
-              </h2>
+              <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
+              <h2 className="text-md">{t("subtitle")}</h2>
             </div>
           </CardHeader>
           <Divider />
@@ -121,7 +122,7 @@ export default function SigninPage() {
                   }}
                   errorMessage={errors.email}
                   isInvalid={Boolean(errors?.email)}
-                  label="Email"
+                  label={t("fields.email")}
                   labelPlacement="outside"
                   name="email"
                   placeholder="dean.winchester@example.com"
@@ -167,7 +168,7 @@ export default function SigninPage() {
                   }
                   errorMessage={errors?.password || undefined}
                   isInvalid={Boolean(errors?.password)}
-                  label="Password"
+                  label={t("fields.password")}
                   labelPlacement="outside"
                   name="password"
                   placeholder="Enter your password"
@@ -188,8 +189,8 @@ export default function SigninPage() {
           <CardFooter className="px-5 pb-6">
             <div className="flex flex-col gap-4 w-full">
               <div className="text-center">
-                <Link color="secondary" href="/sign-up" size="sm">
-                  Create a new account?
+                <Link className="text-secondary" href="/sign-up">
+                  {t("fields.newAccount")}
                 </Link>
               </div>
 
@@ -201,7 +202,7 @@ export default function SigninPage() {
                   type="submit"
                   variant="shadow"
                 >
-                  Sign in
+                  {t("button")}
                 </Button>
               </div>
             </div>

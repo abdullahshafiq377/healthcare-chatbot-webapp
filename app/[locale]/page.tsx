@@ -1,13 +1,16 @@
 "use client";
-import { Link } from "@heroui/link";
 import { button as buttonStyles } from "@heroui/theme";
 import Lottie from "lottie-react";
-import { BriefcaseIcon, UserIcon } from "@heroicons/react/24/solid";
+import { SparklesIcon } from "@heroicons/react/24/solid";
+import { useTranslations } from "next-intl";
 
 import { subtitle, title } from "@/components/primitives";
 import animationData from "@/assets/animations/heartbeat.json";
+import { Link } from "@/i18n/routing";
 
 export default function Home() {
+  const t = useTranslations("HomePage");
+
   return (
     <>
       <section className="flex absolute w-full px-6 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 py-8 md:py-10 sm:w-full sm:max-w-none z-20">
@@ -24,7 +27,7 @@ export default function Home() {
           <span className={title({ size: "lg" })}>Your&nbsp;</span>
           <span
             className={title({
-              color: "violet",
+              color: "green",
               size: "lg",
             })}
           >
@@ -32,9 +35,7 @@ export default function Home() {
           </span>
           <br />
           <span className={title({ size: "lg" })}>Made Smarter with AI.</span>
-          <div className={subtitle({ class: "mt-4" })}>
-            Instant answers, personalized care, always available.
-          </div>
+          <div className={subtitle({ class: "mt-4" })}>{t("subtitle")}</div>
         </div>
 
         <div className="flex gap-4 sm:gap-3 flex-wrap justify-center">
@@ -48,21 +49,10 @@ export default function Home() {
               variant: "shadow",
               size: "lg",
             })}
-            href="/sign-up?userType=professional"
-          >
-            <BriefcaseIcon height={16} width={16} />
-            Register as Professional
-          </Link>
-          <Link
-            className={buttonStyles({
-              variant: "bordered",
-              radius: "full",
-              size: "lg",
-            })}
             href="/sign-up"
           >
-            <UserIcon height={16} width={16} />
-            Sign up as client
+            <SparklesIcon height={16} width={16} />
+            {t("button")}
           </Link>
         </div>
 

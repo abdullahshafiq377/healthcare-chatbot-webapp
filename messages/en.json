@@ -5,7 +5,8 @@
     "signIn": "Sign in"
   },
   "HomePage": {
-    "title": "Your Health Made Smarter with AI.",
+    "title": "Vaccine *highlight* Your Way.",
+    "highlight": "Knowledge.",
     "subtitle": "Fast, reliable, and patient-friendly.",
     "button": "Register now!"
   },

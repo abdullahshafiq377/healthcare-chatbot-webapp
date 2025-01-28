@@ -5,8 +5,9 @@
     "signIn": "Iniciar sesión"
   },
   "HomePage": {
-    "title": "Tu salud más inteligente con IA.",
-    "subtitle": "Respuestas instantáneas, atención personalizada, siempre disponible.",
+    "title": "Vacuna *highlight* a tu manera.",
+    "highlight": "Conocimiento.",
+    "subtitle": "Rápido, confiable y amigable con el paciente.",
     "button": "¡Regístrate ahora!"
   },
   "SignInPage": {
@@ -29,6 +30,6 @@
       "password": "Contraseña",
       "alreadyAccount": "¿Ya tienes una cuenta?"
     },
-    "button": "Registrarse"
+    "button": "Regístrate"
   }
 }

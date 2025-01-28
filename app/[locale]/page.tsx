@@ -26,18 +26,18 @@ export default function Home() {
           </div>
           <br />
           {/*Vaccine Knowledge. Your Way.*/}
-          <span className={title({ color: "yellow", size: "lg" })}>
-            Vaccine&nbsp;
-          </span>
-          <span
-            className={title({
-              size: "lg",
-            })}
-          >
-            Knowledge.&nbsp;
-          </span>
+          <div className={title({ size: "lg" })}>
+            {t("title").split("*highlight*")[0].trim()}
+          </div>
+          &nbsp; &nbsp;
+          <div className={title({ color: "yellow", size: "lg" })}>
+            {t("highlight")}
+          </div>
           <br />
-          <span className={title({ size: "lg" })}>Your Way.</span>
+          <div className={title({ size: "lg" })}>
+            {t("title").split("*highlight*")[1].trim()}
+          </div>
+          {/*<span className={title({ size: "lg" })}>Your Way.</span>*/}
           <div className={subtitle({ class: "mt-4" })}>{t("subtitle")}</div>
         </div>
 

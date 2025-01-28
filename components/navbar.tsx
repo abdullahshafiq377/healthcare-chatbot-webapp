@@ -18,6 +18,7 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Link as NextLink } from "@/i18n/routing";
 import logo from "@/assets/logo.png";
+import LanguageSwitcher from "@/components/language-switcher";
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -72,13 +73,9 @@ export const Navbar = () => {
         justify="end"
       >
         <NavbarItem className="hidden sm:flex gap-2">
-          {/*<Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>*/}
-          {/*  <TwitterIcon className="text-default-500" />*/}
-          {/*</Link>*/}
-          {/*<Link isExternal aria-label="Discord" href={siteConfig.links.discord}>*/}
-          {/*  <DiscordIcon className="text-default-500" />*/}
-          {/*</Link>*/}
-
+          <LanguageSwitcher />
+        </NavbarItem>
+        <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden sm:flex gap-2">

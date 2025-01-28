@@ -267,10 +267,7 @@ export default function SignupPage() {
           </CardFooter>
         </Card>
       </div>
-      <PrivacyPolicyModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-      />
+      <PrivacyPolicyModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }

@@ -16,8 +16,8 @@ import { useTranslations } from "next-intl";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "@/components/icons";
 import { Link as NextLink } from "@/i18n/routing";
+import logo from "@/assets/logo.png";
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -38,7 +38,7 @@ export const Navbar = () => {
             className="flex justify-start items-center gap-1 text-foreground"
             href="/"
           >
-            <Logo />
+            <img alt="logo" className="h-8 w-8" src={logo.src} />
             <p className="font-bold text-inherit">Health AI</p>
           </Link>
         </NavbarBrand>
@@ -83,11 +83,14 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem className="hidden sm:flex gap-2">
           <NextLink
-            className={buttonStyles({
-              color: "secondary",
-              radius: "full",
-              variant: "shadow",
-            })}
+            className={clsx(
+              buttonStyles({
+                color: "success",
+                radius: "full",
+                variant: "shadow",
+              }),
+              "bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+            )}
             href="/sign-in"
           >
             {t("signIn")}
@@ -114,11 +117,14 @@ export const Navbar = () => {
         {/*</Link>*/}
         <ThemeSwitch />
         <NextLink
-          className={buttonStyles({
-            color: "secondary",
-            radius: "full",
-            variant: "shadow",
-          })}
+          className={clsx(
+            buttonStyles({
+              color: "success",
+              radius: "full",
+              variant: "shadow",
+            }),
+            "bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+          )}
           href="/sign-in"
         >
           {t("signIn")}

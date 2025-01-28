@@ -10,7 +10,6 @@ import { Divider } from "@heroui/divider";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 
-import bgImage from "@/assets/Gradient Background 1.png";
 import { title } from "@/components/primitives";
 import { Link } from "@/i18n/routing";
 
@@ -89,13 +88,13 @@ export default function SigninPage() {
 
   return (
     <div>
-      <div className="absolute top-0 left-0 w-[100vw] h-full z-0 object-fill">
-        <img
-          alt="background"
-          className="opacity-20 dark:opacity-10 h-[100vh] w-[100vw]"
-          src={bgImage.src}
-        />
-      </div>
+      {/*<div className="absolute top-0 left-0 w-[100vw] h-full z-0 object-fill">*/}
+      {/*  <img*/}
+      {/*    alt="background"*/}
+      {/*    className="opacity-20 dark:opacity-10 h-[100vh] w-[100vw]"*/}
+      {/*    src={bgImage.src}*/}
+      {/*  />*/}
+      {/*</div>*/}
       <div className="z-20 w-full px-4 sm:px-0 sm:max-w-sm flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <Card
           isBlurred
@@ -126,7 +125,7 @@ export default function SigninPage() {
                   labelPlacement="outside"
                   name="email"
                   placeholder="dean.winchester@example.com"
-                  radius="full"
+                  radius="sm"
                   type="email"
                   value={credentials.email}
                   variant="bordered"
@@ -172,7 +171,7 @@ export default function SigninPage() {
                   labelPlacement="outside"
                   name="password"
                   placeholder="Enter your password"
-                  radius="full"
+                  radius="sm"
                   type={isVisible ? "text" : "password"}
                   value={credentials.password}
                   variant="bordered"
@@ -189,15 +188,18 @@ export default function SigninPage() {
           <CardFooter className="px-5 pb-6">
             <div className="flex flex-col gap-4 w-full">
               <div className="text-center">
-                <Link className="text-secondary" href="/sign-up">
+                <Link
+                  className="text-lime-500 hover:text-lime-600 transition duration-200 ease-in-out"
+                  href="/sign-up"
+                >
                   {t("fields.newAccount")}
                 </Link>
               </div>
 
               <div className="flex gap-4">
                 <Button
-                  className="w-full"
-                  color="secondary"
+                  className="w-full bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+                  color="success"
                   radius="full"
                   type="submit"
                   variant="shadow"

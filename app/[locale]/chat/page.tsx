@@ -44,7 +44,7 @@ const SentMessage = ({ text }: { text: string }) => {
     <div className="flex justify-end">
       <Card
         isBlurred
-        className="max-w-[280px] md:max-w-lg bg-violet-500/40 dark:bg-violet-500/20 border border-violet-500/70 dark:border-violet-500/50 rounded-tr-none"
+        className="max-w-[280px] md:max-w-lg bg-lime-500/20 dark:bg-lime-500/20 border border-lime-500/40 dark:border-lime-500/40 rounded-tr-none"
       >
         <CardBody>{text}</CardBody>
       </Card>
@@ -166,7 +166,11 @@ export default function ChatPage() {
               placeholder="Type your message here"
               variant="bordered"
             />
-            <Button isIconOnly color="secondary">
+            <Button
+              isIconOnly
+              className="bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
+              color="success"
+            >
               <PaperAirplaneIcon height={20} width={20} />
             </Button>
           </div>

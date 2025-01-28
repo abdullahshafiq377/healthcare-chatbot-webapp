@@ -59,7 +59,7 @@ export default async function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <NextIntlClientProvider messages={messages}>
-            <div className="relative flex flex-col h-screen bg-gradient-radial from-white/0 to-violet-500/10 dark:to-violet-500/15 from-60% to-[100%]">
+            <div className="relative flex flex-col h-screen bg-gradient-radial from-white/0 to-lime-500/10 dark:to-lime-500/10 from-60% to-[100%]">
               <Navbar />
               <main className="container mx-auto max-w-7xl px-6 flex-grow ">
                 {children}

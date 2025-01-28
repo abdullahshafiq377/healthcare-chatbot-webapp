@@ -48,12 +48,11 @@ export default function Home() {
           <Link
             className={clsx(
               buttonStyles({
-                color: "success",
                 radius: "full",
                 variant: "shadow",
                 size: "lg",
               }),
-              "bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+              "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
             )}
             href="/sign-up"
           >

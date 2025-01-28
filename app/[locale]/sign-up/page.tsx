@@ -250,8 +250,7 @@ export default function SignupPage() {
 
               <div className="flex gap-4">
                 <Button
-                  className="w-full bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
-                  color="success"
+                  className="w-full text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
                   radius="full"
                   type="button"
                   variant="shadow"

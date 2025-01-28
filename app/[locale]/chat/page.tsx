@@ -168,8 +168,7 @@ export default function ChatPage() {
             />
             <Button
               isIconOnly
-              className="bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
-              color="success"
+              className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
             >
               <PaperAirplaneIcon height={20} width={20} />
             </Button>

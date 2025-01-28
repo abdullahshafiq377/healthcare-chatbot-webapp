@@ -85,11 +85,10 @@ export const Navbar = () => {
           <NextLink
             className={clsx(
               buttonStyles({
-                color: "success",
                 radius: "full",
                 variant: "shadow",
               }),
-              "bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+              "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
             )}
             href="/sign-in"
           >
@@ -119,11 +118,10 @@ export const Navbar = () => {
         <NextLink
           className={clsx(
             buttonStyles({
-              color: "success",
               radius: "full",
               variant: "shadow",
             }),
-            "bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+            "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
           )}
           href="/sign-in"
         >

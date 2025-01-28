@@ -9,9 +9,11 @@ import { Divider } from "@heroui/divider";
 import clsx from "clsx";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
+import { useDisclosure } from "@heroui/modal";
 
 import { title } from "@/components/primitives";
 import { Link } from "@/i18n/routing";
+import PrivacyPolicyModal from "@/components/privacy-policy-modal";
 
 interface Errors {
   [key: string]: string | undefined;
@@ -19,6 +21,8 @@ interface Errors {
 
 export default function SignupPage() {
   const t = useTranslations("SignUpPage");
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [usertype, setUsertype] = useState("customer");
   const [credentials, setCredentials] = useState({
@@ -254,7 +258,7 @@ export default function SignupPage() {
                   radius="full"
                   type="button"
                   variant="shadow"
-                  onPress={onSubmit}
+                  onPress={onOpen}
                 >
                   {t("button")}
                 </Button>
@@ -263,6 +267,10 @@ export default function SignupPage() {
           </CardFooter>
         </Card>
       </div>
+      <PrivacyPolicyModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      />
     </div>
   );
 }

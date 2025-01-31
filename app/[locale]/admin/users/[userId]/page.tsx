@@ -1,25 +1,27 @@
 "use client";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Card, CardBody, CardHeader } from "@heroui/card";
 import {
   CalendarIcon,
   ChatBubbleLeftRightIcon,
-  PaperAirplaneIcon,
 } from "@heroicons/react/24/solid";
 import { Divider } from "@heroui/divider";
-import { Textarea } from "@heroui/input";
-import { Button } from "@heroui/button";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 
 import ConversationSection from "@/components/conversation-section";
 import ConversationItem from "@/components/conversation-item";
 import SentMessage from "@/components/sent-message";
 import ReceivedMessage from "@/components/recieved-message";
 
-export default function ChatPage() {
+export default function UserDetailsPage() {
   const t = useTranslations("ChatsPage");
+  const params = useParams<{ userId: string }>();
+  const { userId } = params;
+
+  console.log(userId);
 
   return (
-    <div className="flex gap-5 h-[calc(100vh-64px-48px)] scroll-smooth">
+    <div className="flex gap-5 h-[calc(100vh-64px-72px)] scroll-smooth">
       <Card
         isBlurred
         className="w-1/4 border-none bg-default/10 dark:bg-white/5 hidden md:flex"
@@ -36,7 +38,6 @@ export default function ChatPage() {
             <ConversationItem title="Hello there!" />
           </ConversationSection>
           <ConversationSection title="Last 7 days">
-            <ConversationItem title="Hello there!" />
             <ConversationItem title="Hello there!" />
             <ConversationItem title="Hello there!" />
           </ConversationSection>
@@ -89,24 +90,6 @@ export default function ChatPage() {
           values."
           />
         </CardBody>
-        <Divider />
-        <CardFooter>
-          <div className="flex gap-4 w-full">
-            <Textarea
-              isClearable
-              maxRows={3}
-              minRows={1}
-              placeholder="Type your message here"
-              variant="bordered"
-            />
-            <Button
-              isIconOnly
-              className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
-            >
-              <PaperAirplaneIcon height={20} width={20} />
-            </Button>
-          </div>
-        </CardFooter>
       </Card>
     </div>
   );

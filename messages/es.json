@@ -2,12 +2,13 @@
   "Navigation": {
     "home": "Inicio",
     "chat": "Chat",
-    "signIn": "Iniciar sesión"
+    "signIn": "Iniciar sesión",
+    "admin": "Administrador"
   },
   "HomePage": {
-    "title": "Vacuna *highlight* a tu manera.",
+    "title": "Vacúnate *highlight* a tu manera.",
     "highlight": "Conocimiento.",
-    "subtitle": "Rápido, confiable y amigable con el paciente.",
+    "subtitle": "Impulsado por IA, rápido, confiable y amigable para el paciente.",
     "button": "¡Regístrate ahora!"
   },
   "SignInPage": {
@@ -30,6 +31,93 @@
       "password": "Contraseña",
       "alreadyAccount": "¿Ya tienes una cuenta?"
     },
-    "button": "Regístrate"
+    "button": "Registrarse"
+  },
+  "AdminNavigation": {
+    "Users": "Usuarios",
+    "Reports": "Informes"
+  },
+  "AdminUsersPage": {
+    "title": "Usuarios",
+    "subtitle": "Gestiona usuarios y sus datos.",
+    "table": {
+      "NAME": "NOMBRE",
+      "STATUS": "ESTADO",
+      "ROLE": "ROL",
+      "ACTIONS": "ACCIONES"
+    },
+    "tooltip": {
+      "details": "Detalles",
+      "resetPassword": "Restablecer contraseña",
+      "delete": "Eliminar usuario"
+    }
+  },
+  "AdminReportsPage": {
+    "title": "Informes",
+    "subtitle": "Ver y gestionar informes.",
+    "table": {
+      "TITLE": "TÍTULO",
+      "REPORTED_BY": "REPORTADO POR",
+      "STATUS": "ESTADO",
+      "ACTIONS": "ACCIONES"
+    },
+    "tooltip": {
+      "details": "Detalles",
+      "delete": "Eliminar informe"
+    }
+  },
+  "ChatsPage": {
+    "chatHistory": "Historial de chat",
+    "conversation": "Conversación"
+  },
+  "ProfileDropdown": {
+    "signedInAs": "Conectado como",
+    "mySettings": "Mis ajustes",
+    "report": "Reportar un problema",
+    "logOut": "Cerrar sesión"
+  },
+  "ResetPasswordConfirmationModal": {
+    "title": "Restablecer contraseña del usuario",
+    "message": "¿Estás seguro de que deseas restablecer la contraseña de este usuario? Esta acción es irreversible.",
+    "cancel": "Cancelar",
+    "confirm": "Restablecer contraseña"
+  },
+  "ViewReportModal": {
+    "modalTitle": "Detalles del informe",
+    "title": "Título",
+    "description": "Descripción",
+    "close": "Cerrar",
+    "markAsResolved": "Marcar como resuelto"
+  },
+  "ReportIssueModal": {
+    "modalTitle": "Reportar un problema",
+    "title": "Título",
+    "description": "Descripción",
+    "cancel": "Cancelar",
+    "confirm": "Reportar"
+  },
+  "ProfilePage": {
+    "profileTitle": "Información del perfil",
+    "profileDescription": "Ver y editar tu información de perfil.",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "cancel": "Cancelar",
+    "updateProfile": "Actualizar perfil",
+    "privacyTitle": "Privacidad",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "privacyDescription": "Controla tu configuración de privacidad.",
+    "updatePassword": "Actualizar contraseña",
+    "myReportsTitle": "Mis informes",
+    "myReportsDescription": "Problemas reportados por ti junto con su estado actual.",
+    "deleteAccountTitle": "Eliminar cuenta",
+    "deleteAccountDescription": "Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán eliminados permanentemente. Antes de eliminar tu cuenta, descarga cualquier dato o información que desees conservar.",
+    "deleteAccount": "Eliminar cuenta"
+  },
+  "PrivacyPolicyModal": {
+    "title": "Política de privacidad",
+    "reject": "Rechazar",
+    "accept": "Aceptar"
   }
 }

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@heroui/button";
 import {
   Modal,
@@ -6,6 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/modal";
+import { useTranslations } from "next-intl";
 
 export default function PrivacyPolicyModal({
   isOpen,
@@ -14,6 +16,8 @@ export default function PrivacyPolicyModal({
   isOpen: boolean;
   onOpenChange: () => void;
 }) {
+  const t = useTranslations("PrivacyPolicyModal");
+
   return (
     <Modal
       isDismissable={false}
@@ -25,7 +29,7 @@ export default function PrivacyPolicyModal({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Privacy policy
+              {t("title")}
             </ModalHeader>
             <ModalBody>
               <p>
@@ -59,13 +63,13 @@ export default function PrivacyPolicyModal({
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="light" onPress={onClose}>
-                Reject
+                {t("reject")}
               </Button>
               <Button
                 className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
                 onPress={onClose}
               >
-                Accept
+                {t("accept")}
               </Button>
             </ModalFooter>
           </>

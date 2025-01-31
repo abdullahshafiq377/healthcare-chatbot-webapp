@@ -19,9 +19,11 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { Link as NextLink } from "@/i18n/routing";
 import logo from "@/assets/logo.png";
 import LanguageSwitcher from "@/components/language-switcher";
+import ProfileDropdown from "@/components/profile-dropdown";
 
 export const Navbar = () => {
   const pathname = usePathname();
+  const loggedIn = true;
 
   console.log(pathname);
 
@@ -29,7 +31,7 @@ export const Navbar = () => {
 
   return (
     <HeroUINavbar
-      className="bg-transparent backdrop-saturate-100 backdrop-blur-none dark:bg-transparent"
+      className="bg-transparent dark:bg-transparent"
       maxWidth="xl"
       position="sticky"
     >
@@ -39,8 +41,8 @@ export const Navbar = () => {
             className="flex justify-start items-center gap-1 text-foreground"
             href="/"
           >
-            <img alt="logo" className="h-8 w-8" src={logo.src} />
-            <p className="font-bold text-inherit">Health AI</p>
+            <img alt="logo" className="h-10 w-10" src={logo.src} />
+            <p className="font-bold text-inherit">VaxSupport</p>
           </Link>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -79,6 +81,30 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden sm:flex gap-2">
+          {loggedIn ? (
+            <ProfileDropdown />
+          ) : (
+            <NextLink
+              className={clsx(
+                buttonStyles({
+                  radius: "full",
+                  variant: "shadow",
+                }),
+                "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+              )}
+              href="/sign-in"
+            >
+              {t("signIn")}
+            </NextLink>
+          )}
+        </NavbarItem>
+      </NavbarContent>
+
+      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+        <ThemeSwitch />
+        {loggedIn ? (
+          <ProfileDropdown />
+        ) : (
           <NextLink
             className={clsx(
               buttonStyles({
@@ -91,39 +117,7 @@ export const Navbar = () => {
           >
             {t("signIn")}
           </NextLink>
-        </NavbarItem>
-        {/*<NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>*/}
-        {/*<NavbarItem className="hidden md:flex">*/}
-        {/*  <Button*/}
-        {/*    isExternal*/}
-        {/*    as={Link}*/}
-        {/*    className="text-sm font-normal text-default-600 bg-default-100"*/}
-        {/*    href={siteConfig.links.sponsor}*/}
-        {/*    startContent={<HeartFilledIcon className="text-danger" />}*/}
-        {/*    variant="flat"*/}
-        {/*  >*/}
-        {/*    Sponsor*/}
-        {/*  </Button>*/}
-        {/*</NavbarItem>*/}
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        {/*<Link isExternal aria-label="Github" href={siteConfig.links.github}>*/}
-        {/*  <GithubIcon className="text-default-500" />*/}
-        {/*</Link>*/}
-        <ThemeSwitch />
-        <NextLink
-          className={clsx(
-            buttonStyles({
-              radius: "full",
-              variant: "shadow",
-            }),
-            "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
-          )}
-          href="/sign-in"
-        >
-          {t("signIn")}
-        </NextLink>
+        )}
         <NavbarMenuToggle />
       </NavbarContent>
 

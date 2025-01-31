@@ -12,6 +12,10 @@ export const siteConfig = {
       label: "chat",
       href: "/chat",
     },
+    {
+      label: "admin",
+      href: "/admin/users",
+    },
     // {
     //   label: "Docs",
     //   href: "/docs",
@@ -37,6 +41,10 @@ export const siteConfig = {
     {
       label: "chat",
       href: "/chat",
+    },
+    {
+      label: "admin",
+      href: "/admin/users",
     },
     // {
     //   label: "Dashboard",

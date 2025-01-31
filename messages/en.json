@@ -2,12 +2,13 @@
   "Navigation": {
     "home": "Home",
     "chat": "Chat",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "admin": "Admin"
   },
   "HomePage": {
     "title": "Vaccine *highlight* Your Way.",
     "highlight": "Knowledge.",
-    "subtitle": "Fast, reliable, and patient-friendly.",
+    "subtitle": "AI-powered, fast, reliable, and patient-friendly.",
     "button": "Register now!"
   },
   "SignInPage": {
@@ -31,5 +32,92 @@
       "alreadyAccount": "Already have an account?"
     },
     "button": "Sign up"
+  },
+  "AdminNavigation": {
+    "Users": "Users",
+    "Reports": "Reports"
+  },
+  "AdminUsersPage": {
+    "title": "Users",
+    "subtitle": "Manage users and their data.",
+    "table": {
+      "NAME": "NAME",
+      "STATUS": "STATUS",
+      "ROLE": "ROLE",
+      "ACTIONS": "ACTIONS"
+    },
+    "tooltip": {
+      "details": "Details",
+      "resetPassword": "Reset password",
+      "delete": "Delete user"
+    }
+  },
+  "AdminReportsPage": {
+    "title": "Reports",
+    "subtitle": "View and manage reports.",
+    "table": {
+      "TITLE": "TITLE",
+      "REPORTED_BY": "REPORTED BY",
+      "STATUS": "STATUS",
+      "ACTIONS": "ACTIONS"
+    },
+    "tooltip": {
+      "details": "Details",
+      "delete": "Delete report"
+    }
+  },
+  "ChatsPage": {
+    "chatHistory": "Chat history",
+    "conversation": "Conversation"
+  },
+  "ProfileDropdown": {
+    "signedInAs": "Signed in as",
+    "mySettings": "My Settings",
+    "report": "Report an issue",
+    "logOut": "Log out"
+  },
+  "ResetPasswordConfirmationModal": {
+    "title": "Reset user password",
+    "message": "Are you sure you want to reset this user's password? This action is irreversible.",
+    "cancel": "Cancel",
+    "confirm": "Reset password"
+  },
+  "ViewReportModal": {
+    "modalTitle": "Report details",
+    "title": "Title",
+    "description": "Description",
+    "close": "Close",
+    "markAsResolved": "Mark as resolved"
+  },
+  "ReportIssueModal": {
+    "modalTitle": "Report an issue",
+    "title": "Title",
+    "description": "Description",
+    "cancel": "Cancel",
+    "confirm": "Report"
+  },
+  "ProfilePage": {
+    "profileTitle": "Profile Information",
+    "profileDescription": "View and edit your profile information.",
+    "name": "name",
+    "email": "Email",
+    "cancel": "Cancel",
+    "updateProfile": "Update profile",
+    "privacyTitle": "Privacy",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "privacyDescription": "Control your privacy settings.",
+    "updatePassword": "Update password",
+    "myReportsTitle": "My Reports",
+    "myReportsDescription": "Issues reported by you along with their current status.",
+    "deleteAccountTitle": "Delete Account",
+    "deleteAccountDescription": "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.",
+    "deleteAccount": "Delete account"
+  },
+  "PrivacyPolicyModal": {
+    "title": "Privacy Policy",
+    "reject": "Reject",
+    "accept": "Accept"
   }
 }

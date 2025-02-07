@@ -10,21 +10,29 @@ import clsx from "clsx";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 import { useDisclosure } from "@heroui/modal";
+import { Alert } from "@heroui/alert";
 
 import { title } from "@/components/primitives";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import PrivacyPolicyModal from "@/components/privacy-policy-modal";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 interface Errors {
   [key: string]: string | undefined;
 }
 
+interface ResponseMessageType {
+  message: string;
+  description: string;
+  type: "success" | "danger";
+}
+
 export default function SignupPage() {
   const t = useTranslations("SignUpPage");
+  const router = useRouter();
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const [usertype, setUsertype] = useState("customer");
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -33,6 +41,13 @@ export default function SignupPage() {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [displayMessage, setDisplayMessage] = useState(false);
+  const [responseMessage, setResponseMessage] = useState<ResponseMessageType>({
+    type: "success",
+    message: "",
+    description: "",
+  });
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -67,8 +82,7 @@ export default function SignupPage() {
     return null;
   };
 
-  const onSubmit = () => {
-    // Custom validation checks
+  const handleSignUpClick = () => {
     const newErrors: Errors = {};
 
     // Password validation
@@ -81,6 +95,9 @@ export default function SignupPage() {
     if (emailError) {
       newErrors.email = emailError;
     }
+    if (credentials.firstName.length === 0) {
+      newErrors.firstName = "First name is required";
+    }
 
     console.log("Error:", newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -92,6 +109,32 @@ export default function SignupPage() {
     // Clear errors and submit
     setErrors({});
     console.log(credentials);
+    onOpen();
+  };
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    onClose();
+    try {
+      const res = await axiosInstance.post("/auth/register", credentials);
+
+      console.log(res);
+      setIsLoading(false);
+      setResponseMessage({
+        type: "success",
+        message: "Successfully registered!",
+        description:
+          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided.",
+      });
+      setDisplayMessage(true);
+      setTimeout(() => {
+        setDisplayMessage(false);
+        router.push("/sign-in");
+      }, 4000);
+    } catch (e) {
+      console.log(e);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -112,6 +155,15 @@ export default function SignupPage() {
             <div className="flex flex-col gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
               <h2 className="text-md">{t("subtitle")}</h2>
+              {displayMessage && (
+                <Alert
+                  className="text-left"
+                  color={responseMessage.type}
+                  description={responseMessage.description}
+                  title={responseMessage?.message}
+                  variant="faded"
+                />
+              )}
             </div>
           </CardHeader>
           <Divider />
@@ -255,10 +307,11 @@ export default function SignupPage() {
               <div className="flex gap-4">
                 <Button
                   className="w-full text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+                  isLoading={isLoading}
                   radius="full"
                   type="button"
                   variant="shadow"
-                  onPress={onOpen}
+                  onPress={handleSignUpClick}
                 >
                   {t("button")}
                 </Button>
@@ -267,7 +320,11 @@ export default function SignupPage() {
           </CardFooter>
         </Card>
       </div>
-      <PrivacyPolicyModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      <PrivacyPolicyModal
+        isOpen={isOpen}
+        onAccept={handleSubmit}
+        onOpenChange={onOpenChange}
+      />
     </div>
   );
 }

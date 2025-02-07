@@ -3,7 +3,7 @@
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import clsx from "clsx";
 import { Divider } from "@heroui/divider";
@@ -11,7 +11,9 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 
 import { title } from "@/components/primitives";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { axiosInstance } from "@/utils/axiosInstance";
+import { UserContext } from "@/context/user-context";
 
 interface Errors {
   [key: string]: string | undefined;
@@ -20,9 +22,13 @@ interface Errors {
 export default function SigninPage() {
   const t = useTranslations("SignInPage");
 
+  const { login } = useContext(UserContext);
+  const router = useRouter();
+
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -57,9 +63,7 @@ export default function SigninPage() {
     return null;
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = async () => {
     // Custom validation checks
     const newErrors: Errors = {};
 
@@ -84,6 +88,23 @@ export default function SigninPage() {
     // Clear errors and submit
     setErrors({});
     console.log(credentials);
+
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.post("auth/login", credentials);
+
+      login(res?.data?.user);
+      console.log(res?.data);
+      setIsLoading(false);
+      if (res?.data?.user?.role === "admin") {
+        router.push("/admin/users");
+      } else {
+        router.push("/chat");
+      }
+    } catch (e) {
+      setIsLoading(false);
+      console.log(e);
+    }
   };
 
   return (
@@ -199,9 +220,11 @@ export default function SigninPage() {
               <div className="flex gap-4">
                 <Button
                   className="w-full text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+                  isLoading={isLoading}
                   radius="full"
                   type="submit"
                   variant="shadow"
+                  onPress={onSubmit}
                 >
                   {t("button")}
                 </Button>

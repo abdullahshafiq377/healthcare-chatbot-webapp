@@ -3,77 +3,35 @@ export type SiteConfig = typeof siteConfig;
 export const siteConfig = {
   name: "VaxSupport",
   description: "VaxSupport",
+  adminItems: [
+    {
+      label: "home",
+      href: "/",
+    },
+    {
+      label: "chat",
+      href: "/chat",
+    },
+    {
+      label: "admin",
+      href: "/admin/users",
+    },
+  ],
+  userItems: [
+    {
+      label: "home",
+      href: "/",
+    },
+    {
+      label: "chat",
+      href: "/chat",
+    },
+  ],
   navItems: [
     {
       label: "home",
       href: "/",
     },
-    {
-      label: "chat",
-      href: "/chat",
-    },
-    {
-      label: "admin",
-      href: "/admin/users",
-    },
-    // {
-    //   label: "Docs",
-    //   href: "/docs",
-    // },
-    // {
-    //   label: "Pricing",
-    //   href: "/pricing",
-    // },
-    // {
-    //   label: "Blog",
-    //   href: "/blog",
-    // },
-    // {
-    //   label: "About",
-    //   href: "/sign-in",
-    // },
-  ],
-  navMenuItems: [
-    {
-      label: "home",
-      href: "/",
-    },
-    {
-      label: "chat",
-      href: "/chat",
-    },
-    {
-      label: "admin",
-      href: "/admin/users",
-    },
-    // {
-    //   label: "Dashboard",
-    //   href: "/dashboard",
-    // },
-    // {
-    //   label: "Projects",
-    //   href: "/projects",
-    // },
-    // {
-    //   label: "Team",
-    //   href: "/team",
-    // },
-    // {
-    //   label: "Calendar",
-    //   href: "/calendar",
-    // },
-    // {
-    //   label: "Settings",
-    //   href: "/settings",
-    // },
-    // {
-    //   label: "Help & Feedback",
-    //   href: "/help-feedback",
-    // },
-    // {
-    //   label: "Logout",
-    //   href: "/logout",
-    // },
   ],
   links: {
     github: "https://github.com/frontio-ai/heroui",

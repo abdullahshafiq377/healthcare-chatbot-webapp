@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -12,10 +12,12 @@ import { useTranslations } from "next-intl";
 
 import ReportModal from "@/components/report-modal";
 import { useRouter } from "@/i18n/routing";
+import { UserContext } from "@/context/user-context";
 
 const ProfileDropdown = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
+  const { user, logout } = useContext(UserContext);
   const t = useTranslations("ProfileDropdown");
 
   return (
@@ -33,14 +35,14 @@ const ProfileDropdown = () => {
               name: "hidden sm:block",
               description: "hidden sm:block"
             }}
-            description="user@example.com"
-            name="John Doe"
+            description={user?.email}
+            name={`${user?.firstName} ${user?.lastName}`}
           />
         </DropdownTrigger>
         <DropdownMenu aria-label="User Actions" variant="flat">
           <DropdownItem key="profile" className="h-14 gap-2">
             <p className="font-bold">{t("signedInAs")}</p>
-            <p className="font-bold">user@example.com</p>
+            <p className="font-bold">{user?.email}</p>
           </DropdownItem>
           <DropdownItem key="settings" onPress={() => router.push("/profile")}>
             {t("mySettings")}
@@ -48,7 +50,7 @@ const ProfileDropdown = () => {
           <DropdownItem key="report" onPress={onOpen}>
             {t("report")}
           </DropdownItem>
-          <DropdownItem key="logout" color="danger">
+          <DropdownItem key="logout" color="danger" onPress={logout}>
             {t("logOut")}
           </DropdownItem>
         </DropdownMenu>

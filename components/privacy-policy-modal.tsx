@@ -12,9 +12,11 @@ import { useTranslations } from "next-intl";
 export default function PrivacyPolicyModal({
   isOpen,
   onOpenChange,
+  onAccept,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
+  onAccept?: () => void;
 }) {
   const t = useTranslations("PrivacyPolicyModal");
 
@@ -67,7 +69,7 @@ export default function PrivacyPolicyModal({
               </Button>
               <Button
                 className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
-                onPress={onClose}
+                onPress={onAccept}
               >
                 {t("accept")}
               </Button>

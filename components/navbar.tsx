@@ -13,6 +13,7 @@ import { button as buttonStyles, link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useContext, useEffect, useState } from "react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -20,14 +21,40 @@ import { Link as NextLink } from "@/i18n/routing";
 import logo from "@/assets/logo.png";
 import LanguageSwitcher from "@/components/language-switcher";
 import ProfileDropdown from "@/components/profile-dropdown";
+import { UserContext } from "@/context/user-context";
 
 export const Navbar = () => {
   const pathname = usePathname();
-  const loggedIn = true;
+  const { user } = useContext(UserContext);
 
   console.log(pathname);
 
   const t = useTranslations("Navigation");
+
+  const [navItems, setNavItems] = useState<
+    {
+      label: string;
+      href: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    console.log(user?.role === "admin");
+    if (user?.role === "admin") {
+      setNavItems(siteConfig?.adminItems);
+
+      return;
+    }
+    if (user?.role === "user") {
+      setNavItems(siteConfig?.userItems);
+
+      return;
+    } else {
+      setNavItems(siteConfig?.navItems);
+
+      return;
+    }
+  }, [user]);
 
   return (
     <HeroUINavbar
@@ -46,7 +73,7 @@ export const Navbar = () => {
           </Link>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
+          {navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
                 className={clsx(
@@ -81,7 +108,7 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden sm:flex gap-2">
-          {loggedIn ? (
+          {user ? (
             <ProfileDropdown />
           ) : (
             <NextLink
@@ -102,7 +129,7 @@ export const Navbar = () => {
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <ThemeSwitch />
-        {loggedIn ? (
+        {user ? (
           <ProfileDropdown />
         ) : (
           <NextLink
@@ -124,7 +151,7 @@ export const Navbar = () => {
       <NavbarMenu>
         {/*{searchInput}*/}
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
+          {navItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <NextLink
                 color={item.href === pathname ? "secondary" : "foreground"}

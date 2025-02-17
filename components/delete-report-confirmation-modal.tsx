@@ -9,16 +9,18 @@ import {
 } from "@heroui/modal";
 import { useTranslations } from "next-intl";
 
-export default function ResetPasswordConfirmationModal({
+export default function DeleteReportConfirmationModal({
   isOpen,
   onOpenChange,
   onConfirm,
+  isLoading,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
   onConfirm: () => void;
+  isLoading: boolean;
 }) {
-  const t = useTranslations("ResetPasswordConfirmationModal");
+  const t = useTranslations("DeleteReportConfirmationModal");
 
   return (
     <Modal
@@ -40,7 +42,12 @@ export default function ResetPasswordConfirmationModal({
               <Button variant="light" onPress={onClose}>
                 {t("cancel")}
               </Button>
-              <Button color="danger" variant="ghost" onPress={onConfirm}>
+              <Button
+                color="danger"
+                isLoading={isLoading}
+                variant="ghost"
+                onPress={onConfirm}
+              >
                 {t("confirm")}
               </Button>
             </ModalFooter>

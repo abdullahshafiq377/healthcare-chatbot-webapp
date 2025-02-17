@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
@@ -9,10 +9,16 @@ import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
 import { useTranslations } from "next-intl";
 
+import { axiosInstance } from "@/utils/axiosInstance";
+import Loader from "@/components/loader";
+import { ReportType } from "@/types/dataTypes";
+
 const defaultValue = {
   id: "",
-  name: "",
+  firstName: "",
+  lastName: "",
   email: "",
+  role: "",
 };
 
 type VisibilityKeys = "oldPassword" | "newPassword" | "confirmPassword";
@@ -31,7 +37,7 @@ const ProfilePage = () => {
   const [isError, setIsError] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [validationErrors, setValidationErrors] = useState({
-    name: "",
+    firstName: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -40,6 +46,7 @@ const ProfilePage = () => {
     newPassword: false,
     confirmPassword: false,
   });
+  const [reports, setReports] = useState<ReportType[]>([]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -47,12 +54,13 @@ const ProfilePage = () => {
       behavior: "smooth", // Add smooth scrolling animation
     });
   };
+  const [isLoading, setIsLoading] = useState(true);
 
   const validateName = (value: string) => {
     if (value.trim().length === 0) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        name: "Name cannot be empty.",
+        firstName: "Name cannot be empty.",
       }));
 
       return false;
@@ -60,14 +68,43 @@ const ProfilePage = () => {
     if (value.trim().length < 3) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        name: "Name too short.",
+        firstName: "Name too short.",
       }));
 
       return false;
     }
     setValidationErrors((prevState) => ({
       ...prevState,
-      name: "",
+      firstName: "",
+    }));
+
+    return true;
+  };
+
+  const validateEmail = (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (value.trim().length === 0) {
+      setValidationErrors((prevState) => ({
+        ...prevState,
+        email: "Email cannot be empty.",
+      }));
+
+      return false;
+    }
+
+    if (!emailRegex.test(value)) {
+      setValidationErrors((prevState) => ({
+        ...prevState,
+        email: "Invalid email format.",
+      }));
+
+      return false;
+    }
+
+    setValidationErrors((prevState) => ({
+      ...prevState,
+      email: "",
     }));
 
     return true;
@@ -149,308 +186,383 @@ const ProfilePage = () => {
     }));
   };
 
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.get("/auth/profile");
+      const reportsResponse = await axiosInstance.get("/reports/user");
+
+      console.log(reportsResponse.data);
+      setReports(reportsResponse.data);
+      setUserInfo({
+        id: res?.data?.user?._id,
+        email: res?.data?.user?.email,
+        firstName: res?.data?.user?.firstName,
+        lastName: res?.data?.user?.lastName,
+        role: res?.data?.user?.role,
+      });
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleUpdateProfile = async () => {
+    try {
+      setIsUserInfoLoading(true);
+      const res = await axiosInstance.put("/users/update", {
+        firstName: userInfo?.firstName,
+        lastName: userInfo?.lastName,
+      });
+
+      console.log(res);
+      setIsUserInfoLoading(false);
+      setAlertMessage("Profile updated successfully!");
+      setIsSuccess(true);
+      scrollToTop();
+      await fetchData();
+      setTimeout(() => {
+        setIsSuccess(false);
+        setAlertMessage("");
+      }, 3000);
+    } catch (e) {
+      setIsUserInfoLoading(false);
+      setAlertMessage(
+        "An error occurred while updating profile. Please try again.",
+      );
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setAlertMessage("");
+      }, 3000);
+      console.log(e);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    try {
+      setIsPasswordLoading(true);
+      const res = await axiosInstance.put("/users/password", {
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword,
+      });
+
+      console.log(res);
+      setAlertMessage("Password updated successfully!");
+      setIsSuccess(true);
+      scrollToTop();
+      setTimeout(() => {
+        setIsSuccess(false);
+        setAlertMessage("");
+      }, 3000);
+      setIsPasswordLoading(false);
+      setPasswords({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (e: any) {
+      setIsPasswordLoading(false);
+      scrollToTop();
+      setAlertMessage(e?.response?.data?.message);
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setAlertMessage("");
+      }, 3000);
+      console.log(e?.response?.data);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-8 w-full">
-      {(isSuccess || isError) && (
-        <Alert
-          color={isSuccess ? "success" : isError ? "danger" : "default"}
-          description={alertMessage}
-          title={
-            isSuccess ? "Update successful" : isError ? "An error occurred" : ""
-          }
-          variant="faded"
-        />
-      )}
-      <Card>
-        <CardBody className="flex flex-row px-8 py-7">
-          <div className="flex flex-col gap-2 flex-1">
-            <h2 className="text-lg font-medium">{t("profileTitle")}</h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {t("profileDescription")}
-            </span>
-          </div>
-          <div className="flex flex-col gap-4 flex-grow max-w-2xl">
-            <Input
-              errorMessage={validationErrors.name}
-              isInvalid={Boolean(validationErrors.name)}
-              label={t("name")}
-              labelPlacement="outside"
-              placeholder="Jhon Doe"
-              value={userInfo.name}
-              onChange={(e) => {
-                setUserInfo((prevState) => ({
-                  ...prevState,
-                  name: e.target.value,
-                }));
-                validateName(e.target.value);
-              }}
-            />
-            <Input
-              disabled
-              description="Updating email is not supported at the moment."
-              label={t("email")}
-              labelPlacement="outside"
-              placeholder="jhon.doe@example.com"
-              type="email"
-              value={userInfo.email}
-            />
-          </div>
-        </CardBody>
-        <CardFooter className="flex justify-end gap-4">
-          <Button color="default" variant="ghost">
-            {t("cancel")}
-          </Button>
-          <Button
-            className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
-            isLoading={isUserInfoLoading}
-            variant="solid"
-          >
-            {t("updateProfile")}
-          </Button>
-        </CardFooter>
-      </Card>
+    <>
+      <Loader fullPage isLoading={isLoading} />
+      <div className="flex flex-col gap-8 w-full">
+        {(isSuccess || isError) && (
+          <Alert
+            className="text-left"
+            color={isSuccess ? "success" : isError ? "danger" : "default"}
+            description={alertMessage}
+            title={
+              isSuccess
+                ? "Update successful"
+                : isError
+                  ? "An error occurred"
+                  : ""
+            }
+            variant="faded"
+          />
+        )}
+        <Card>
+          <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7 ">
+            <div className="flex flex-col gap-2 flex-1">
+              <h2 className="text-lg font-medium">{t("profileTitle")}</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {t("profileDescription")}
+              </span>
+            </div>
+            <div className="flex flex-col gap-4 flex-grow max-w-2xl">
+              <Input
+                errorMessage={validationErrors.firstName}
+                isInvalid={Boolean(validationErrors.firstName)}
+                label={t("firstName")}
+                labelPlacement="outside"
+                placeholder="Jhon"
+                value={userInfo.firstName}
+                onChange={(e) => {
+                  setUserInfo((prevState) => ({
+                    ...prevState,
+                    firstName: e.target.value,
+                  }));
+                  validateName(e.target.value);
+                }}
+              />
+              <Input
+                label={t("lastName")}
+                labelPlacement="outside"
+                placeholder="Doe"
+                value={userInfo.lastName}
+                onChange={(e) => {
+                  setUserInfo((prevState) => ({
+                    ...prevState,
+                    lastName: e.target.value,
+                  }));
+                }}
+              />
+              <Input
+                disabled
+                description="Updating email is not allowed."
+                isDisabled={true}
+                label={t("email")}
+                labelPlacement="outside"
+                placeholder="jhon.doe@example.com"
+                type="email"
+                value={userInfo.email}
+              />
+            </div>
+          </CardBody>
+          <CardFooter className="flex justify-end gap-4">
+            <Button color="default" variant="ghost">
+              {t("cancel")}
+            </Button>
+            <Button
+              className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+              isLoading={isUserInfoLoading}
+              variant="solid"
+              onPress={handleUpdateProfile}
+            >
+              {t("updateProfile")}
+            </Button>
+          </CardFooter>
+        </Card>
 
-      <Card>
-        <CardBody className="flex flex-row px-8 py-7">
-          <div className="flex flex-col gap-2 flex-1 ">
-            <h2 className="text-lg font-medium">{t("privacyTitle")}</h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {t("privacyDescription")}
-            </span>
-          </div>
-          <div className="flex flex-col gap-4 flex-grow max-w-2xl">
-            <Input
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-none"
-                  name="oldPassword"
-                  type="button"
-                  onClick={toggleVisibility}
-                >
-                  {isVisible ? (
-                    <EyeSlashIcon
-                      className="text-default-400 pointer-events-none"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    <EyeIcon
-                      className="text-default-400 pointer-events-none"
-                      height={20}
-                      width={20}
-                    />
-                  )}
-                </button>
-              }
-              label={t("currentPassword")}
-              labelPlacement="outside"
-              placeholder="Enter your current password"
-              type={isVisible.oldPassword ? "text" : "password"}
-              onChange={(e) => {
-                setPasswords((prevState) => ({
-                  ...prevState,
-                  oldPassword: e.target.value,
-                }));
-              }}
-            />
-            <Input
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-none"
-                  name="newPassword"
-                  type="button"
-                  onClick={toggleVisibility}
-                >
-                  {isVisible ? (
-                    <EyeSlashIcon
-                      className="text-default-400 pointer-events-none"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    <EyeIcon
-                      className="text-default-400 pointer-events-none"
-                      height={20}
-                      width={20}
-                    />
-                  )}
-                </button>
-              }
-              errorMessage={validationErrors.newPassword}
-              isInvalid={Boolean(validationErrors.newPassword)}
-              label={t("newPassword")}
-              labelPlacement="outside"
-              placeholder="Enter your new password"
-              type={isVisible.newPassword ? "text" : "password"}
-              onChange={(e) => {
-                setPasswords((prevState) => ({
-                  ...prevState,
-                  newPassword: e.target.value,
-                }));
-                validatePassword(e.target.value, passwords.confirmPassword);
-              }}
-            />
-            <Input
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-none"
-                  name="confirmPassword"
-                  type="button"
-                  onClick={toggleVisibility}
-                >
-                  {isVisible ? (
-                    <EyeSlashIcon
-                      className="text-default-400 pointer-events-none"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    <EyeIcon
-                      className="text-default-400 pointer-events-none"
-                      height={20}
-                      width={20}
-                    />
-                  )}
-                </button>
-              }
-              errorMessage={validationErrors.confirmPassword}
-              isInvalid={Boolean(validationErrors.confirmPassword)}
-              label={t("confirmPassword")}
-              labelPlacement="outside"
-              placeholder="Confirm Password"
-              type={isVisible.confirmPassword ? "text" : "password"}
-              onChange={(e) => {
-                setPasswords((prevState) => ({
-                  ...prevState,
-                  confirmPassword: e.target.value,
-                }));
-                validatePassword(passwords.newPassword, e.target.value);
-              }}
-            />
-          </div>
-        </CardBody>
-        <CardFooter className="flex justify-end gap-4">
-          <Button color="default" variant="ghost">
-            {t("cancel")}
-          </Button>
-          <Button
-            className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
-            isLoading={isPasswordLoading}
-            variant="solid"
-          >
-            {t("updatePassword")}
-          </Button>
-        </CardFooter>
-      </Card>
-
-      <Card>
-        <CardBody className="flex flex-row px-8 py-7">
-          <div className="flex flex-col gap-2 flex-1">
-            <h2 className="text-lg font-medium">{t("myReportsTitle")}</h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {t("myReportsDescription")}
-            </span>
-          </div>
-          <div className="flex flex-col gap-8 flex-grow max-w-2xl">
-            <Card isHoverable isPressable>
-              <CardHeader className="flex justify-between gap-4">
-                <p className="font-medium text-left">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                </p>
-                <Chip color="danger" size="sm" variant="flat">
-                  Open
-                </Chip>
-              </CardHeader>
-              <Divider />
-              <CardBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </CardBody>
-            </Card>
-            <Card isHoverable isPressable>
-              <CardHeader className="flex justify-between gap-4">
-                <p className="font-medium text-left">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                </p>
-                <Chip color="success" size="sm" variant="flat">
-                  Resolved
-                </Chip>
-              </CardHeader>
-              <Divider />
-              <CardBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </CardBody>
-            </Card>
-          </div>
-        </CardBody>
-      </Card>
-
-      <Card>
-        <CardBody className="flex flex-row px-8 py-7">
-          <div className="flex flex-col gap-2 flex-1">
-            <h2 className="text-lg font-medium">{t("deleteAccountTitle")}</h2>
-          </div>
-          <div className="flex flex-col gap-4 flex-grow max-w-2xl">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {t("deleteAccountDescription")}
-            </span>
-          </div>
-        </CardBody>
-        <CardFooter className="flex justify-end gap-4">
-          <Button color="danger" variant="solid">
-            {t("deleteAccount")}
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+        <Card>
+          <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
+            <div className="flex flex-col gap-2 flex-1 ">
+              <h2 className="text-lg font-medium">{t("privacyTitle")}</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {t("privacyDescription")}
+              </span>
+            </div>
+            <div className="flex flex-col gap-4 flex-grow max-w-2xl">
+              <Input
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    name="oldPassword"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible.oldPassword ? (
+                      <EyeSlashIcon
+                        className="text-default-400 pointer-events-none"
+                        height={20}
+                        width={20}
+                      />
+                    ) : (
+                      <EyeIcon
+                        className="text-default-400 pointer-events-none"
+                        height={20}
+                        width={20}
+                      />
+                    )}
+                  </button>
+                }
+                label={t("currentPassword")}
+                labelPlacement="outside"
+                placeholder="Enter your current password"
+                type={isVisible.oldPassword ? "text" : "password"}
+                onChange={(e) => {
+                  setPasswords((prevState) => ({
+                    ...prevState,
+                    oldPassword: e.target.value,
+                  }));
+                }}
+              />
+              <Input
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    name="newPassword"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible.newPassword ? (
+                      <EyeSlashIcon
+                        className="text-default-400 pointer-events-none"
+                        height={20}
+                        width={20}
+                      />
+                    ) : (
+                      <EyeIcon
+                        className="text-default-400 pointer-events-none"
+                        height={20}
+                        width={20}
+                      />
+                    )}
+                  </button>
+                }
+                errorMessage={validationErrors.newPassword}
+                isInvalid={Boolean(validationErrors.newPassword)}
+                label={t("newPassword")}
+                labelPlacement="outside"
+                placeholder="Enter your new password"
+                type={isVisible.newPassword ? "text" : "password"}
+                onChange={(e) => {
+                  setPasswords((prevState) => ({
+                    ...prevState,
+                    newPassword: e.target.value,
+                  }));
+                  validatePassword(e.target.value, passwords.confirmPassword);
+                }}
+              />
+              <Input
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    name="confirmPassword"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible.confirmPassword ? (
+                      <EyeSlashIcon
+                        className="text-default-400 pointer-events-none"
+                        height={20}
+                        width={20}
+                      />
+                    ) : (
+                      <EyeIcon
+                        className="text-default-400 pointer-events-none"
+                        height={20}
+                        width={20}
+                      />
+                    )}
+                  </button>
+                }
+                errorMessage={validationErrors.confirmPassword}
+                isInvalid={Boolean(validationErrors.confirmPassword)}
+                label={t("confirmPassword")}
+                labelPlacement="outside"
+                placeholder="Confirm Password"
+                type={isVisible.confirmPassword ? "text" : "password"}
+                onChange={(e) => {
+                  setPasswords((prevState) => ({
+                    ...prevState,
+                    confirmPassword: e.target.value,
+                  }));
+                  validatePassword(passwords.newPassword, e.target.value);
+                }}
+              />
+            </div>
+          </CardBody>
+          <CardFooter className="flex justify-end gap-4">
+            <Button color="default" variant="ghost">
+              {t("cancel")}
+            </Button>
+            <Button
+              className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+              isLoading={isPasswordLoading}
+              variant="solid"
+              onPress={handleUpdatePassword}
+            >
+              {t("updatePassword")}
+            </Button>
+          </CardFooter>
+        </Card>
+        {userInfo?.role !== "admin" && (
+          <Card>
+            <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
+              <div className="flex flex-col gap-2 flex-1">
+                <h2 className="text-lg font-medium">{t("myReportsTitle")}</h2>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {t("myReportsDescription")}
+                </span>
+              </div>
+              <div className="flex flex-col gap-8 flex-grow max-w-2xl">
+                {reports.length > 0
+                  ? reports.map((report) => (
+                      <Card key={report?._id} isHoverable>
+                        <CardHeader className="flex justify-between gap-4">
+                          <p className="font-medium text-left">
+                            {report?.title}
+                          </p>
+                          <Chip
+                            className="capitalize"
+                            color={
+                              report?.status === "open" ? "danger" : "success"
+                            }
+                            size="sm"
+                            variant="flat"
+                          >
+                            {report?.status}
+                          </Chip>
+                        </CardHeader>
+                        <Divider />
+                        <CardBody>
+                          <p>{report?.description}</p>
+                        </CardBody>
+                      </Card>
+                    ))
+                  : "No reports found."}
+              </div>
+            </CardBody>
+          </Card>
+        )}
+        {userInfo?.role !== "admin" && (
+          <Card>
+            <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
+              <div className="flex flex-col gap-2 flex-1">
+                <h2 className="text-lg font-medium">
+                  {t("deleteAccountTitle")}
+                </h2>
+              </div>
+              <div className="flex flex-col gap-4 flex-grow max-w-2xl">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {t("deleteAccountDescription")}
+                </span>
+              </div>
+            </CardBody>
+            <CardFooter className="flex justify-end gap-4">
+              <Button
+                color="danger"
+                isDisabled={userInfo?.role === "admin"}
+                variant="solid"
+              >
+                {t("deleteAccount")}
+              </Button>
+            </CardFooter>
+          </Card>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 "use client";
-import { Key, useCallback } from "react";
+import { Key, useCallback, useState } from "react";
 import { Tooltip } from "@heroui/tooltip";
 import {
   Table,
@@ -21,6 +21,8 @@ import { useTranslations } from "next-intl";
 
 import { useRouter } from "@/i18n/routing";
 import ResetPasswordConfirmationModal from "@/components/reset-password-confirmation-modal";
+import { UserDataType } from "@/types/dataTypes";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 export const columns = [
   { name: "NAME", uid: "name" },
@@ -88,12 +90,41 @@ const statusColorMap = {
   vacation: "warning",
 };
 
-export default function UsersTable() {
+export default function UsersTable({
+  data,
+  fetchData,
+}: {
+  data: UserDataType[];
+  fetchData: () => void;
+}) {
   const router = useRouter();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [selectedUserForResetPassword, setSelectedUserForResetPassword] =
+    useState<string | null>(null);
   const t = useTranslations("AdminUsersPage");
 
-  const renderCell = useCallback((user: (typeof users)[0], columnKey: Key) => {
+  const handleResetPasswordClick = (id: string) => {
+    if (id) {
+      setSelectedUserForResetPassword(id);
+      onOpen();
+    }
+  };
+
+  const handleResetPassword = async () => {
+    try {
+      console.log(selectedUserForResetPassword);
+      const res = await axiosInstance.put(
+        `/users/reset-password/${selectedUserForResetPassword}`,
+      );
+
+      console.log(res);
+      onClose();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const renderCell = useCallback((user: UserDataType, columnKey: Key) => {
     // @ts-ignore
     const cellValue = user[columnKey];
 
@@ -101,9 +132,9 @@ export default function UsersTable() {
       case "name":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
+            avatarProps={{ radius: "lg" }}
             description={user.email}
-            name={cellValue}
+            name={user?.firstName + " " + user?.lastName}
           >
             {user.email}
           </User>
@@ -133,7 +164,7 @@ export default function UsersTable() {
               <span
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
                 role="button"
-                onClick={() => router.push(`/admin/users/${user.id}`)}
+                onClick={() => router.push(`/admin/users/${user._id}`)}
               >
                 <EyeIcon height={20} width={20} />
               </span>
@@ -142,7 +173,7 @@ export default function UsersTable() {
               <span
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
                 role="button"
-                onClick={onOpen}
+                onClick={() => handleResetPasswordClick(user._id)}
               >
                 <PencilSquareIcon height={20} width={20} />
               </span>
@@ -172,9 +203,9 @@ export default function UsersTable() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
+        <TableBody items={data}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item._id}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
@@ -184,6 +215,7 @@ export default function UsersTable() {
       </Table>
       <ResetPasswordConfirmationModal
         isOpen={isOpen}
+        onConfirm={handleResetPassword}
         onOpenChange={onOpenChange}
       />
     </>

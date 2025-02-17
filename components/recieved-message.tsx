@@ -13,7 +13,7 @@ const ReceivedMessage = ({
       <Card className="rounded-tl-none max-w-[280px] md:max-w-lg border dark:border-default/50">
         <CardBody>
           {isLoading ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <Skeleton className="w-full rounded-full">
                 <div className="h-3 w-[250px] rounded-lg bg-default-300" />
               </Skeleton>

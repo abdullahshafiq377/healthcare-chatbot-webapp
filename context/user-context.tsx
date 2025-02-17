@@ -18,7 +18,7 @@ interface UserContextType {
 
 const getSession = async () => {
   try {
-    const response = await axiosInstance.get("/auth/profile");
+    const response = await axiosInstance.get("/auth/check-session");
 
     if (response.status === 200) {
       console.log(response?.data);

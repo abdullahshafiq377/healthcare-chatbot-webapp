@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { Divider } from "@heroui/divider";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
+import { Alert } from "@heroui/alert";
 
 import { title } from "@/components/primitives";
 import { Link, useRouter } from "@/i18n/routing";
@@ -29,6 +30,7 @@ export default function SigninPage() {
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -65,6 +67,7 @@ export default function SigninPage() {
 
   const onSubmit = async () => {
     // Custom validation checks
+    setAlertMessage("");
     const newErrors: Errors = {};
 
     // Password validation
@@ -101,9 +104,14 @@ export default function SigninPage() {
       } else {
         router.push("/chat");
       }
-    } catch (e) {
+    } catch (e: any) {
       setIsLoading(false);
       console.log(e);
+      if (e?.response?.data?.message) {
+        setAlertMessage(e?.response?.data?.message);
+      } else {
+        setAlertMessage("Something went wrong. Please try again later.");
+      }
     }
   };
 
@@ -134,6 +142,13 @@ export default function SigninPage() {
               onSubmit={onSubmit}
             >
               <div className="flex flex-col gap-4 w-full">
+                {alertMessage.length > 0 && (
+                  <Alert
+                    color="danger"
+                    description={alertMessage}
+                    title="An error occured"
+                  />
+                )}
                 <Input
                   isRequired
                   classNames={{

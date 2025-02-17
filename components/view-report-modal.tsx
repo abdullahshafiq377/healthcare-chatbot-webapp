@@ -8,15 +8,42 @@ import {
   ModalHeader,
 } from "@heroui/modal";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+
+import { ReportType } from "@/types/dataTypes";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 export default function ViewReportModal({
   isOpen,
   onOpenChange,
+  data,
+  fetchData,
+  onClose,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
+  fetchData: () => void;
+  onClose: () => void;
+  data: ReportType | null;
 }) {
   const t = useTranslations("ViewReportModal");
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdateStatus = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.put(`/reports/${data?._id}`, {
+        status: data?.status === "open" ? "resolved" : "open",
+      });
+
+      console.log(res.data);
+      setLoading(false);
+      onClose();
+      await fetchData();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Modal
@@ -32,49 +59,34 @@ export default function ViewReportModal({
               {t("modalTitle")}
             </ModalHeader>
             <ModalBody>
-              <div>
-                <span className="font-semibold">{t("title")}:</span>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non ris
-                </p>
-              </div>
-              <div>
-                <span className="font-semibold">{t("description")}:</span>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </div>
+              {data?.description && (
+                <>
+                  <div>
+                    <span className="font-semibold">{t("title")}:</span>
+                    <p>{data?.title}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">{t("description")}:</span>
+                    <p>{data?.description}</p>
+                  </div>
+                </>
+              )}
             </ModalBody>
             <ModalFooter>
               <Button variant="light" onPress={onClose}>
                 {t("close")}
               </Button>
               <Button
-                className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
-                onPress={onClose}
+                className={
+                  data?.status === "open"
+                    ? "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+                    : ""
+                }
+                color={data?.status === "open" ? "default" : "danger"}
+                isLoading={loading}
+                onPress={handleUpdateStatus}
               >
-                {t("markAsResolved")}
+                {t(data?.status === "open" ? "markAsResolved" : "markAsOpen")}
               </Button>
             </ModalFooter>
           </>

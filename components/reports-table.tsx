@@ -1,5 +1,5 @@
 "use client";
-import { Key, useCallback } from "react";
+import { Key, useCallback, useState } from "react";
 import { Tooltip } from "@heroui/tooltip";
 import {
   Table,
@@ -14,72 +14,19 @@ import { User } from "@heroui/user";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useDisclosure } from "@heroui/modal";
 import { useTranslations } from "next-intl";
+import dayjs from "dayjs";
 
 import ViewReportModal from "@/components/view-report-modal";
+import { ReportType } from "@/types/dataTypes";
+import DeleteReportConfirmationModal from "@/components/delete-report-confirmation-modal";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 export const columns = [
   { name: "TITLE", uid: "title" },
   { name: "REPORTED_BY", uid: "reportedBy" },
   { name: "STATUS", uid: "status" },
+  { name: "REPORTED_ON", uid: "reportedOn" },
   { name: "ACTIONS", uid: "actions" },
-];
-
-export const users = [
-  {
-    id: 1,
-    title: "Bug in updating profile image",
-    name: "Tony Reichert",
-    role: "Admin",
-    team: "Management",
-    status: "open",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
-  {
-    id: 2,
-    title: "Bug in updating profile image",
-    name: "Zoey Lang",
-    role: "User",
-    team: "Development",
-    status: "open",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    email: "zoey.lang@example.com",
-  },
-  {
-    id: 3,
-    title: "Bug in updating profile image",
-    name: "Jane Fisher",
-    role: "User",
-    team: "Development",
-    status: "open",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-    email: "jane.fisher@example.com",
-  },
-  {
-    id: 4,
-    title: "Bug in updating profile image",
-    name: "William Howard",
-    role: "User",
-    team: "Marketing",
-    status: "resolved",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-    email: "william.howard@example.com",
-  },
-  {
-    id: 5,
-    title: "Bug in updating profile image",
-    name: "Kristen Copper",
-    role: "User",
-    team: "Sales",
-    status: "resolved",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-    email: "kristen.cooper@example.com",
-  },
 ];
 
 const statusColorMap = {
@@ -87,29 +34,77 @@ const statusColorMap = {
   open: "danger",
 };
 
-export default function ReportsTable() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export default function ReportsTable({
+  data,
+  fetchData,
+}: {
+  data: ReportType[];
+  fetchData: () => void;
+}) {
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const {
+    isOpen: isConfirmDeleteModalOpen,
+    onOpen: onConfrimDeleteModalOpen,
+    onOpenChange: onConfirmDeleteModalOpenChange,
+    onClose: onConfirmDeleteModalClose,
+  } = useDisclosure();
   const t = useTranslations("AdminReportsPage");
+  const [selectedReport, setSelectedReport] = useState<ReportType | null>(null);
+  const [selectedReportForDelete, setSelectedReportForDelete] = useState<
+    string | null
+  >(null);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
-  const renderCell = useCallback((user: (typeof users)[0], columnKey: Key) => {
+  const handleViewReportClick = (report: ReportType) => {
+    if (report) {
+      setSelectedReport(report);
+      onOpen();
+    }
+  };
+
+  const handleDeleteReportClick = (reportId: string) => {
+    if (reportId) {
+      onConfrimDeleteModalOpen();
+      setSelectedReportForDelete(reportId);
+    }
+  };
+
+  const handleDeleteReport = async () => {
+    try {
+      setIsDeleteLoading(true);
+      const res = await axiosInstance.delete(
+        `/reports/${selectedReportForDelete}`,
+      );
+
+      console.log(res?.data);
+      setIsDeleteLoading(false);
+      onConfirmDeleteModalClose();
+      fetchData();
+    } catch (e) {
+      setIsDeleteLoading(false);
+      console.log(e);
+    }
+  };
+
+  const renderCell = useCallback((report: ReportType, columnKey: Key) => {
     // @ts-ignore
-    const cellValue = user[columnKey];
+    const cellValue = report[columnKey];
 
     switch (columnKey) {
       case "title":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">{cellValue}</p>
+            <p className="text-bold text-sm capitalize">{report.title}</p>
           </div>
         );
       case "reportedBy":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
-            description={user.email}
-            name={user.name}
+            avatarProps={{ radius: "lg" }}
+            description={report.user.email}
+            name={`${report.user.firstName} ${report.user.lastName}`}
           >
-            {user.email}
+            {report.user.email}
           </User>
         );
       case "status":
@@ -117,12 +112,22 @@ export default function ReportsTable() {
           <Chip
             className="capitalize"
             // @ts-ignore
-            color={statusColorMap[user.status]}
+            color={statusColorMap[report.status]}
             size="sm"
             variant="flat"
           >
             {cellValue}
           </Chip>
+        );
+      case "reportedOn":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm">
+              {dayjs(report.createdAt).format("DD MMM, YYYY") +
+                " at " +
+                dayjs(report.createdAt).format("HH:mm")}
+            </p>
+          </div>
         );
       case "actions":
         return (
@@ -131,13 +136,17 @@ export default function ReportsTable() {
               <span
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
                 role="button"
-                onClick={onOpen}
+                onClick={() => handleViewReportClick(report)}
               >
                 <EyeIcon height={20} width={20} />
               </span>
             </Tooltip>
             <Tooltip color="danger" content={t("tooltip.delete")}>
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <span
+                className="text-lg text-danger cursor-pointer active:opacity-50"
+                role="button"
+                onClick={() => handleDeleteReportClick(report?._id)}
+              >
                 <TrashIcon height={20} width={20} />
               </span>
             </Tooltip>
@@ -161,9 +170,9 @@ export default function ReportsTable() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
+        <TableBody items={data}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item._id}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
@@ -171,7 +180,19 @@ export default function ReportsTable() {
           )}
         </TableBody>
       </Table>
-      <ViewReportModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      <ViewReportModal
+        data={selectedReport}
+        fetchData={fetchData}
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpenChange={onOpenChange}
+      />
+      <DeleteReportConfirmationModal
+        isLoading={isDeleteLoading}
+        isOpen={isConfirmDeleteModalOpen}
+        onConfirm={handleDeleteReport}
+        onOpenChange={onConfirmDeleteModalOpenChange}
+      />
     </>
   );
 }

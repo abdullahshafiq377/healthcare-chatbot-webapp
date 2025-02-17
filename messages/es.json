@@ -6,9 +6,9 @@
     "admin": "Administrador"
   },
   "HomePage": {
-    "title": "Vacúnate *highlight* a tu manera.",
+    "title": "Vacuna *destacada* a tu manera.",
     "highlight": "Conocimiento.",
-    "subtitle": "Impulsado por IA, rápido, confiable y amigable para el paciente.",
+    "subtitle": "Impulsado por IA, rápido, confiable y amigable con el paciente.",
     "button": "¡Regístrate ahora!"
   },
   "SignInPage": {
@@ -17,13 +17,13 @@
     "fields": {
       "email": "Correo electrónico",
       "password": "Contraseña",
-      "newAccount": "¿Crear una nueva cuenta?"
+      "newAccount": "¿Crear una cuenta nueva?"
     },
     "button": "Iniciar sesión"
   },
   "SignUpPage": {
     "title": "¡Únete hoy!",
-    "subtitle": "Crea tu cuenta para comenzar tu viaje de salud.",
+    "subtitle": "Crea tu cuenta para comenzar tu viaje en el cuidado de la salud.",
     "fields": {
       "firstName": "Nombre",
       "lastName": "Apellido",
@@ -31,11 +31,11 @@
       "password": "Contraseña",
       "alreadyAccount": "¿Ya tienes una cuenta?"
     },
-    "button": "Registrarse"
+    "button": "Regístrate"
   },
   "AdminNavigation": {
     "Users": "Usuarios",
-    "Reports": "Informes"
+    "Reports": "Reportes"
   },
   "AdminUsersPage": {
     "title": "Usuarios",
@@ -53,17 +53,18 @@
     }
   },
   "AdminReportsPage": {
-    "title": "Informes",
-    "subtitle": "Ver y gestionar informes.",
+    "title": "Reportes",
+    "subtitle": "Ver y gestionar reportes.",
     "table": {
       "TITLE": "TÍTULO",
       "REPORTED_BY": "REPORTADO POR",
+      "REPORTED_ON": "REPORTADO EL",
       "STATUS": "ESTADO",
       "ACTIONS": "ACCIONES"
     },
     "tooltip": {
       "details": "Detalles",
-      "delete": "Eliminar informe"
+      "delete": "Eliminar reporte"
     }
   },
   "ChatsPage": {
@@ -72,22 +73,23 @@
   },
   "ProfileDropdown": {
     "signedInAs": "Conectado como",
-    "mySettings": "Mis ajustes",
+    "mySettings": "Mi Perfil",
     "report": "Reportar un problema",
     "logOut": "Cerrar sesión"
   },
   "ResetPasswordConfirmationModal": {
-    "title": "Restablecer contraseña del usuario",
-    "message": "¿Estás seguro de que deseas restablecer la contraseña de este usuario? Esta acción es irreversible.",
+    "title": "Restablecer contraseña de usuario",
+    "message": "¿Estás seguro de que quieres restablecer la contraseña de este usuario? Esta acción es irreversible.",
     "cancel": "Cancelar",
     "confirm": "Restablecer contraseña"
   },
   "ViewReportModal": {
-    "modalTitle": "Detalles del informe",
+    "modalTitle": "Detalles del reporte",
     "title": "Título",
     "description": "Descripción",
     "close": "Cerrar",
-    "markAsResolved": "Marcar como resuelto"
+    "markAsResolved": "Marcar como resuelto",
+    "markAsOpen": "Marcar como abierto"
   },
   "ReportIssueModal": {
     "modalTitle": "Reportar un problema",
@@ -98,8 +100,9 @@
   },
   "ProfilePage": {
     "profileTitle": "Información del perfil",
-    "profileDescription": "Ver y editar tu información de perfil.",
-    "name": "Nombre",
+    "profileDescription": "Ver y editar la información de tu perfil.",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
     "email": "Correo electrónico",
     "cancel": "Cancelar",
     "updateProfile": "Actualizar perfil",
@@ -107,17 +110,23 @@
     "currentPassword": "Contraseña actual",
     "newPassword": "Nueva contraseña",
     "confirmPassword": "Confirmar contraseña",
-    "privacyDescription": "Controla tu configuración de privacidad.",
+    "privacyDescription": "Controla la configuración de tu privacidad.",
     "updatePassword": "Actualizar contraseña",
-    "myReportsTitle": "Mis informes",
+    "myReportsTitle": "Mis reportes",
     "myReportsDescription": "Problemas reportados por ti junto con su estado actual.",
     "deleteAccountTitle": "Eliminar cuenta",
-    "deleteAccountDescription": "Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán eliminados permanentemente. Antes de eliminar tu cuenta, descarga cualquier dato o información que desees conservar.",
+    "deleteAccountDescription": "Una vez que elimines tu cuenta, todos sus recursos y datos serán eliminados permanentemente. Antes de eliminar tu cuenta, por favor descarga cualquier dato o información que desees conservar.",
     "deleteAccount": "Eliminar cuenta"
   },
   "PrivacyPolicyModal": {
     "title": "Política de privacidad",
     "reject": "Rechazar",
     "accept": "Aceptar"
+  },
+  "DeleteReportConfirmationModal": {
+    "title": "Eliminar reporte",
+    "message": "¿Estás seguro de que quieres eliminar este reporte? Esta acción es irreversible.",
+    "cancel": "Cancelar",
+    "confirm": "Eliminar reporte"
   }
 }

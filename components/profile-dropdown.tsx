@@ -15,7 +15,7 @@ import { useRouter } from "@/i18n/routing";
 import { UserContext } from "@/context/user-context";
 
 const ProfileDropdown = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const router = useRouter();
   const { user, logout } = useContext(UserContext);
   const t = useTranslations("ProfileDropdown");
@@ -47,15 +47,21 @@ const ProfileDropdown = () => {
           <DropdownItem key="settings" onPress={() => router.push("/profile")}>
             {t("mySettings")}
           </DropdownItem>
-          <DropdownItem key="report" onPress={onOpen}>
-            {t("report")}
-          </DropdownItem>
+          {user?.role !== "admin" ? (
+            <DropdownItem key="report" onPress={onOpen}>
+              {t("report")}
+            </DropdownItem>
+          ) : null}
           <DropdownItem key="logout" color="danger" onPress={logout}>
             {t("logOut")}
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <ReportModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      <ReportModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpenChange={onOpenChange}
+      />
     </>
   );
 };

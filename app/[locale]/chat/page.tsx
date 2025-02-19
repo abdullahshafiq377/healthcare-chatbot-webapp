@@ -397,6 +397,12 @@ export default function ChatPage() {
               variant="bordered"
               onChange={(e) => setMessageText(e.target.value)}
               onClear={() => setMessageText("")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(); // Prevent newline
+                  sendMessage(); // Send message
+                }
+              }}
             />
             <Button
               isIconOnly

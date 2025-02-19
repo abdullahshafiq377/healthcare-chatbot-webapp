@@ -13,15 +13,19 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const verifySession = async () => {
-    const session = await axiosInstance.get("/auth/check-session");
+    try {
+      const session = await axiosInstance.get("/auth/check-session");
 
-    if (
-      !session?.data?.isAuthenticated ||
-      session?.data?.user?.role !== "admin"
-    ) {
-      router.replace("/");
+      if (
+        !session?.data?.isAuthenticated ||
+        session?.data?.user?.role !== "admin"
+      ) {
+        router.replace("/");
+      }
+      console.log("Session", session);
+    } catch (e) {
+      console.log(e);
     }
-    console.log("Session", session);
   };
 
   useEffect(() => {

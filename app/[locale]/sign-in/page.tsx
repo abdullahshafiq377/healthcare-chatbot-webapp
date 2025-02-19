@@ -15,6 +15,8 @@ import { title } from "@/components/primitives";
 import { Link, useRouter } from "@/i18n/routing";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { UserContext } from "@/context/user-context";
+import { useDisclosure } from "@heroui/modal";
+import ForgetPasswordModal from "@/components/forget-password-modal";
 
 interface Errors {
   [key: string]: string | undefined;
@@ -25,6 +27,9 @@ export default function SigninPage() {
 
   const { login } = useContext(UserContext);
   const router = useRouter();
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
 
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
@@ -124,13 +129,15 @@ export default function SigninPage() {
       {/*    src={bgImage.src}*/}
       {/*  />*/}
       {/*</div>*/}
-      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-sm flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div
+        className="z-20 w-full px-4 sm:px-0 sm:max-w-sm flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <Card
           isBlurred
           className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="py-6 px-5">
-            <div className="flex flex-col gap-4 w-full text-center justify-center">
+            <div
+              className="flex flex-col gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
               <h2 className="text-md">{t("subtitle")}</h2>
             </div>
@@ -153,7 +160,7 @@ export default function SigninPage() {
                   isRequired
                   classNames={{
                     inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left",
+                    errorMessage: "text-left"
                   }}
                   errorMessage={errors.email}
                   isInvalid={Boolean(errors?.email)}
@@ -168,7 +175,7 @@ export default function SigninPage() {
                   onValueChange={(value) =>
                     setCredentials((prevState) => ({
                       ...prevState,
-                      email: value,
+                      email: value
                     }))
                   }
                 />
@@ -177,7 +184,7 @@ export default function SigninPage() {
                   isRequired
                   classNames={{
                     inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left",
+                    errorMessage: "text-left"
                   }}
                   endContent={
                     <button
@@ -214,15 +221,25 @@ export default function SigninPage() {
                   onValueChange={(value) =>
                     setCredentials((prevState) => ({
                       ...prevState,
-                      password: value,
+                      password: value
                     }))
                   }
                 />
+                <div className="text-right">
+                  <Button
+                    className="text-lime-500 hover:text-lime-600 transition duration-200 ease-in-out"
+                    variant="light"
+                    onPress={onOpen}
+                  >
+                    {t("fields.forgetPassword")}
+                  </Button>
+                </div>
               </div>
             </Form>
           </CardBody>
           <CardFooter className="px-5 pb-6">
             <div className="flex flex-col gap-4 w-full">
+
               <div className="text-center">
                 <Link
                   className="text-lime-500 hover:text-lime-600 transition duration-200 ease-in-out"
@@ -248,6 +265,8 @@ export default function SigninPage() {
           </CardFooter>
         </Card>
       </div>
+      <ForgetPasswordModal isOpen={isOpen} onOpenChange={onOpenChange}
+                           onClose={onClose} />
     </div>
   );
 }

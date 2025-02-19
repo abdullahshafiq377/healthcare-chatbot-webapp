@@ -37,8 +37,10 @@ const getSession = async () => {
 // Create the context
 export const UserContext = createContext<UserContextType>({
   user: null,
-  login: () => {},
-  logout: () => {},
+  login: () => {
+  },
+  logout: () => {
+  }
 });
 
 // Create a provider component
@@ -58,10 +60,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
-    axiosInstance.post("/auth/logout").then((res) => {
-      setUser(null); // Clear user data
-      window.location.href = "/en";
-    });
+    try {
+      axiosInstance.post("/auth/logout").then((res) => {
+        setUser(null); // Clear user data
+        window.location.href = "/en";
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (

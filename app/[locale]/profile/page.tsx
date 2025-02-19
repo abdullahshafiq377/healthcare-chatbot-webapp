@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
@@ -12,24 +12,33 @@ import { useTranslations } from "next-intl";
 import { axiosInstance } from "@/utils/axiosInstance";
 import Loader from "@/components/loader";
 import { ReportType } from "@/types/dataTypes";
+import { UserContext } from "@/context/user-context";
+import { useDisclosure } from "@heroui/modal";
+import DeleteAccountConfirmationModal
+  from "@/components/delete-account-confirmation-modal";
 
 const defaultValue = {
   id: "",
   firstName: "",
   lastName: "",
   email: "",
-  role: "",
+  role: ""
 };
 
 type VisibilityKeys = "oldPassword" | "newPassword" | "confirmPassword";
 
 const ProfilePage = () => {
   const t = useTranslations("ProfilePage");
+
+  const { logout } = useContext(UserContext);
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
   const [userInfo, setUserInfo] = useState(defaultValue);
   const [passwords, setPasswords] = useState({
     oldPassword: "",
     newPassword: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
   const [isUserInfoLoading, setIsUserInfoLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
@@ -39,19 +48,20 @@ const ProfilePage = () => {
   const [validationErrors, setValidationErrors] = useState({
     firstName: "",
     newPassword: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
   const [isVisible, setIsVisible] = useState<Record<VisibilityKeys, boolean>>({
     oldPassword: false,
     newPassword: false,
-    confirmPassword: false,
+    confirmPassword: false
   });
   const [reports, setReports] = useState<ReportType[]>([]);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // Add smooth scrolling animation
+      behavior: "smooth" // Add smooth scrolling animation
     });
   };
   const [isLoading, setIsLoading] = useState(true);
@@ -60,7 +70,7 @@ const ProfilePage = () => {
     if (value.trim().length === 0) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        firstName: "Name cannot be empty.",
+        firstName: "Name cannot be empty."
       }));
 
       return false;
@@ -68,43 +78,14 @@ const ProfilePage = () => {
     if (value.trim().length < 3) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        firstName: "Name too short.",
+        firstName: "Name too short."
       }));
 
       return false;
     }
     setValidationErrors((prevState) => ({
       ...prevState,
-      firstName: "",
-    }));
-
-    return true;
-  };
-
-  const validateEmail = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (value.trim().length === 0) {
-      setValidationErrors((prevState) => ({
-        ...prevState,
-        email: "Email cannot be empty.",
-      }));
-
-      return false;
-    }
-
-    if (!emailRegex.test(value)) {
-      setValidationErrors((prevState) => ({
-        ...prevState,
-        email: "Invalid email format.",
-      }));
-
-      return false;
-    }
-
-    setValidationErrors((prevState) => ({
-      ...prevState,
-      email: "",
+      firstName: ""
     }));
 
     return true;
@@ -115,7 +96,7 @@ const ProfilePage = () => {
     if (passwords.oldPassword === password) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        newPassword: "New password cannot be the same as the current password.",
+        newPassword: "New password cannot be the same as the current password."
       }));
 
       return false;
@@ -125,28 +106,28 @@ const ProfilePage = () => {
     if (password.length < 8) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        newPassword: "Password must be at least 8 characters long.",
+        newPassword: "Password must be at least 8 characters long."
       }));
 
       return false;
     } else if (!/[A-Z]/.test(password)) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        newPassword: "Password must contain at least one uppercase letter.",
+        newPassword: "Password must contain at least one uppercase letter."
       }));
 
       return false;
     } else if (!/[a-z]/.test(password)) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        newPassword: "Password must contain at least one lowercase letter.",
+        newPassword: "Password must contain at least one lowercase letter."
       }));
 
       return false;
     } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        newPassword: "Password must contain at least one special character.",
+        newPassword: "Password must contain at least one special character."
       }));
 
       return false;
@@ -154,14 +135,14 @@ const ProfilePage = () => {
 
     setValidationErrors((prevState) => ({
       ...prevState,
-      newPassword: "",
+      newPassword: ""
     }));
 
     // Check if passwords match
     if (password !== confirmPassword) {
       setValidationErrors((prevState) => ({
         ...prevState,
-        confirmPassword: "Passwords do not match.",
+        confirmPassword: "Passwords do not match."
       }));
 
       return false;
@@ -170,7 +151,7 @@ const ProfilePage = () => {
     setValidationErrors((prevState) => ({
       ...prevState,
       newPassword: "",
-      confirmPassword: "",
+      confirmPassword: ""
     }));
 
     return true;
@@ -182,7 +163,7 @@ const ProfilePage = () => {
 
     setIsVisible((prevState) => ({
       ...prevState,
-      [name]: !prevState[name],
+      [name]: !prevState[name]
     }));
   };
 
@@ -199,7 +180,7 @@ const ProfilePage = () => {
         email: res?.data?.user?.email,
         firstName: res?.data?.user?.firstName,
         lastName: res?.data?.user?.lastName,
-        role: res?.data?.user?.role,
+        role: res?.data?.user?.role
       });
       setIsLoading(false);
     } catch (e) {
@@ -217,7 +198,7 @@ const ProfilePage = () => {
       setIsUserInfoLoading(true);
       const res = await axiosInstance.put("/users/update", {
         firstName: userInfo?.firstName,
-        lastName: userInfo?.lastName,
+        lastName: userInfo?.lastName
       });
 
       console.log(res);
@@ -233,7 +214,7 @@ const ProfilePage = () => {
     } catch (e) {
       setIsUserInfoLoading(false);
       setAlertMessage(
-        "An error occurred while updating profile. Please try again.",
+        "An error occurred while updating profile. Please try again."
       );
       setIsError(true);
       setTimeout(() => {
@@ -249,7 +230,7 @@ const ProfilePage = () => {
       setIsPasswordLoading(true);
       const res = await axiosInstance.put("/users/password", {
         oldPassword: passwords.oldPassword,
-        newPassword: passwords.newPassword,
+        newPassword: passwords.newPassword
       });
 
       console.log(res);
@@ -264,7 +245,7 @@ const ProfilePage = () => {
       setPasswords({
         oldPassword: "",
         newPassword: "",
-        confirmPassword: "",
+        confirmPassword: ""
       });
     } catch (e: any) {
       setIsPasswordLoading(false);
@@ -276,6 +257,18 @@ const ProfilePage = () => {
         setAlertMessage("");
       }, 3000);
       console.log(e?.response?.data);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setIsDeleteLoading(true);
+      const res = await axiosInstance.delete("users/delete");
+      logout();
+      setIsDeleteLoading(false);
+    } catch (e) {
+      setIsDeleteLoading(false);
+      console.log(e);
     }
   };
 
@@ -299,7 +292,8 @@ const ProfilePage = () => {
           />
         )}
         <Card>
-          <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7 ">
+          <CardBody
+            className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7 ">
             <div className="flex flex-col gap-2 flex-1">
               <h2 className="text-lg font-medium">{t("profileTitle")}</h2>
               <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -317,7 +311,7 @@ const ProfilePage = () => {
                 onChange={(e) => {
                   setUserInfo((prevState) => ({
                     ...prevState,
-                    firstName: e.target.value,
+                    firstName: e.target.value
                   }));
                   validateName(e.target.value);
                 }}
@@ -330,7 +324,7 @@ const ProfilePage = () => {
                 onChange={(e) => {
                   setUserInfo((prevState) => ({
                     ...prevState,
-                    lastName: e.target.value,
+                    lastName: e.target.value
                   }));
                 }}
               />
@@ -362,7 +356,8 @@ const ProfilePage = () => {
         </Card>
 
         <Card>
-          <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
+          <CardBody
+            className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
             <div className="flex flex-col gap-2 flex-1 ">
               <h2 className="text-lg font-medium">{t("privacyTitle")}</h2>
               <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -401,7 +396,7 @@ const ProfilePage = () => {
                 onChange={(e) => {
                   setPasswords((prevState) => ({
                     ...prevState,
-                    oldPassword: e.target.value,
+                    oldPassword: e.target.value
                   }));
                 }}
               />
@@ -438,7 +433,7 @@ const ProfilePage = () => {
                 onChange={(e) => {
                   setPasswords((prevState) => ({
                     ...prevState,
-                    newPassword: e.target.value,
+                    newPassword: e.target.value
                   }));
                   validatePassword(e.target.value, passwords.confirmPassword);
                 }}
@@ -476,7 +471,7 @@ const ProfilePage = () => {
                 onChange={(e) => {
                   setPasswords((prevState) => ({
                     ...prevState,
-                    confirmPassword: e.target.value,
+                    confirmPassword: e.target.value
                   }));
                   validatePassword(passwords.newPassword, e.target.value);
                 }}
@@ -499,7 +494,8 @@ const ProfilePage = () => {
         </Card>
         {userInfo?.role !== "admin" && (
           <Card>
-            <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
+            <CardBody
+              className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
               <div className="flex flex-col gap-2 flex-1">
                 <h2 className="text-lg font-medium">{t("myReportsTitle")}</h2>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -509,28 +505,28 @@ const ProfilePage = () => {
               <div className="flex flex-col gap-8 flex-grow max-w-2xl">
                 {reports.length > 0
                   ? reports.map((report) => (
-                      <Card key={report?._id} isHoverable>
-                        <CardHeader className="flex justify-between gap-4">
-                          <p className="font-medium text-left">
-                            {report?.title}
-                          </p>
-                          <Chip
-                            className="capitalize"
-                            color={
-                              report?.status === "open" ? "danger" : "success"
-                            }
-                            size="sm"
-                            variant="flat"
-                          >
-                            {report?.status}
-                          </Chip>
-                        </CardHeader>
-                        <Divider />
-                        <CardBody>
-                          <p>{report?.description}</p>
-                        </CardBody>
-                      </Card>
-                    ))
+                    <Card key={report?._id} isHoverable>
+                      <CardHeader className="flex justify-between gap-4">
+                        <p className="font-medium text-left">
+                          {report?.title}
+                        </p>
+                        <Chip
+                          className="capitalize"
+                          color={
+                            report?.status === "open" ? "danger" : "success"
+                          }
+                          size="sm"
+                          variant="flat"
+                        >
+                          {report?.status}
+                        </Chip>
+                      </CardHeader>
+                      <Divider />
+                      <CardBody>
+                        <p>{report?.description}</p>
+                      </CardBody>
+                    </Card>
+                  ))
                   : "No reports found."}
               </div>
             </CardBody>
@@ -538,7 +534,8 @@ const ProfilePage = () => {
         )}
         {userInfo?.role !== "admin" && (
           <Card>
-            <CardBody className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
+            <CardBody
+              className="flex flex-col gap-8 md:flex-row md:gap-0 sm:px-8 sm:py-7">
               <div className="flex flex-col gap-2 flex-1">
                 <h2 className="text-lg font-medium">
                   {t("deleteAccountTitle")}
@@ -552,6 +549,7 @@ const ProfilePage = () => {
             </CardBody>
             <CardFooter className="flex justify-end gap-4">
               <Button
+                onPress={onOpen}
                 color="danger"
                 isDisabled={userInfo?.role === "admin"}
                 variant="solid"
@@ -562,6 +560,10 @@ const ProfilePage = () => {
           </Card>
         )}
       </div>
+      <DeleteAccountConfirmationModal isOpen={isOpen}
+                                      onOpenChange={onOpenChange}
+                                      onConfirm={handleDeleteAccount}
+                                      isLoading={isDeleteLoading} />
     </>
   );
 };

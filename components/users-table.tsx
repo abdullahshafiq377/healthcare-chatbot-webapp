@@ -7,100 +7,61 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@heroui/table";
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
 import {
   EyeIcon,
   PencilSquareIcon,
-  TrashIcon,
+  TrashIcon
 } from "@heroicons/react/24/solid";
 import { useDisclosure } from "@heroui/modal";
 import { useTranslations } from "next-intl";
 
 import { useRouter } from "@/i18n/routing";
-import ResetPasswordConfirmationModal from "@/components/reset-password-confirmation-modal";
+import ResetPasswordConfirmationModal
+  from "@/components/reset-password-confirmation-modal";
 import { UserDataType } from "@/types/dataTypes";
 import { axiosInstance } from "@/utils/axiosInstance";
+import DeleteUserConfirmationModal
+  from "@/components/delete-user-confirmation-modal";
 
 export const columns = [
   { name: "NAME", uid: "name" },
   { name: "ROLE", uid: "role" },
   { name: "STATUS", uid: "status" },
-  { name: "ACTIONS", uid: "actions" },
-];
-
-export const users = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    role: "Admin",
-    team: "Management",
-    status: "active",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
-  {
-    id: 2,
-    name: "Zoey Lang",
-    role: "User",
-    team: "Development",
-    status: "active",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    email: "zoey.lang@example.com",
-  },
-  {
-    id: 3,
-    name: "Jane Fisher",
-    role: "User",
-    team: "Development",
-    status: "active",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-    email: "jane.fisher@example.com",
-  },
-  {
-    id: 4,
-    name: "William Howard",
-    role: "User",
-    team: "Marketing",
-    status: "active",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-    email: "william.howard@example.com",
-  },
-  {
-    id: 5,
-    name: "Kristen Copper",
-    role: "User",
-    team: "Sales",
-    status: "active",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-    email: "kristen.cooper@example.com",
-  },
+  { name: "ACTIONS", uid: "actions" }
 ];
 
 const statusColorMap = {
   active: "success",
   paused: "danger",
-  vacation: "warning",
+  vacation: "warning"
 };
 
 export default function UsersTable({
-  data,
-  fetchData,
-}: {
+                                     data,
+                                     fetchData
+                                   }: {
   data: UserDataType[];
   fetchData: () => void;
 }) {
   const router = useRouter();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
+    onClose: onDeleteClose
+  } = useDisclosure();
+
   const [selectedUserForResetPassword, setSelectedUserForResetPassword] =
     useState<string | null>(null);
+  const [selectedUserForDelete, setSelectedUserForDelete] = useState<string | null>(null);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isResetPasswordLoading, setIsResetPasswordLoading] = useState(false);
+
   const t = useTranslations("AdminUsersPage");
 
   const handleResetPasswordClick = (id: string) => {
@@ -112,14 +73,42 @@ export default function UsersTable({
 
   const handleResetPassword = async () => {
     try {
+      setIsResetPasswordLoading(true);
       console.log(selectedUserForResetPassword);
       const res = await axiosInstance.put(
-        `/users/reset-password/${selectedUserForResetPassword}`,
+        `/users/reset-password/${selectedUserForResetPassword}`
       );
 
       console.log(res);
+      setIsResetPasswordLoading(false);
       onClose();
     } catch (e) {
+      setIsResetPasswordLoading(false);
+      console.log(e);
+    }
+  };
+
+  const handleDeleteClick = (id: string) => {
+    if (id) {
+      setSelectedUserForDelete(id);
+      onDeleteOpen();
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleteLoading(true);
+      console.log(selectedUserForDelete);
+      const res = await axiosInstance.delete(
+        `/users/admin/delete/${selectedUserForDelete}`
+      );
+
+      console.log(res);
+      setIsDeleteLoading(false);
+      fetchData();
+      onDeleteClose();
+    } catch (e) {
+      setIsDeleteLoading(false);
       console.log(e);
     }
   };
@@ -150,11 +139,13 @@ export default function UsersTable({
           <Chip
             className="capitalize"
             // @ts-ignore
-            color={statusColorMap[user.status]}
+            // color={statusColorMap[user.status]}
+            color={statusColorMap["active"]}
             size="sm"
             variant="flat"
           >
-            {cellValue}
+            {/*{cellValue}*/}
+            Active
           </Chip>
         );
       case "actions":
@@ -179,7 +170,10 @@ export default function UsersTable({
               </span>
             </Tooltip>
             <Tooltip color="danger" content={t("tooltip.delete")}>
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <span
+                role="button"
+                onClick={() => handleDeleteClick(user._id)}
+                className="text-lg text-danger cursor-pointer active:opacity-50">
                 <TrashIcon height={20} width={20} />
               </span>
             </Tooltip>
@@ -217,7 +211,12 @@ export default function UsersTable({
         isOpen={isOpen}
         onConfirm={handleResetPassword}
         onOpenChange={onOpenChange}
+        isLoading={isResetPasswordLoading}
       />
+      <DeleteUserConfirmationModal isOpen={isDeleteOpen}
+                                   onOpenChange={onDeleteOpenChange}
+                                   onConfirm={handleDelete}
+                                   isLoading={isDeleteLoading} />
     </>
   );
 }

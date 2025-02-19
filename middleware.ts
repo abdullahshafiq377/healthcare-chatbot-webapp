@@ -8,7 +8,7 @@ export default async function middleware(req: NextRequest) {
   const pathname = url.pathname;
 
   // Extract locale from pathname (e.g., "/en/chat" → "en")
-  const localeMatch = pathname.match(/^\/(en|es|fr|de)/);
+  const localeMatch = pathname.match(/^\/(en|es)/);
   const locale = localeMatch ? localeMatch[1] : "en"; // Default to English
 
   // Handle Internationalization Middleware
@@ -19,5 +19,5 @@ export default async function middleware(req: NextRequest) {
 
 // Apply middleware to all localized routes
 export const config = {
-  matcher: ["/(en|es|fr|de)/:path*"], // Adjust based on supported locales
+  matcher: ["/", "/(en|es)/:path*"], // Adjust based on supported locales
 };

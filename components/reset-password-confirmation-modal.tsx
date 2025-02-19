@@ -42,7 +42,12 @@ export default function ResetPasswordConfirmationModal({
               <Button variant="light" onPress={onClose}>
                 {t("cancel")}
               </Button>
-              <Button isLoading={isLoading} color="danger" variant="ghost" onPress={onConfirm}>
+              <Button
+                color="danger"
+                isLoading={isLoading}
+                variant="ghost"
+                onPress={onConfirm}
+              >
                 {t("confirm")}
               </Button>
             </ModalFooter>

@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
-  ModalHeader
+  ModalHeader,
 } from "@heroui/modal";
 import { Input } from "@heroui/input";
 import { useTranslations } from "next-intl";
@@ -15,10 +15,10 @@ import { Alert } from "@heroui/alert";
 import { axiosInstance } from "@/utils/axiosInstance";
 
 export default function ForgetPasswordModal({
-                                      isOpen,
-                                      onOpenChange,
-                                      onClose
-                                    }: {
+  isOpen,
+  onOpenChange,
+  onClose,
+}: {
   isOpen: boolean;
   onOpenChange: () => void;
   onClose: () => void;
@@ -90,14 +90,16 @@ export default function ForgetPasswordModal({
             </ModalHeader>
             <ModalBody>
               {showSuccessMessage && (
-                <Alert color="success"
-                       title="Password reset successfull."
-                       description="An email has been sent to your registered email address." />
+                <Alert
+                  color="success"
+                  description="An email has been sent to your registered email address."
+                  title="Password reset successfull."
+                />
               )}
               <Input
                 isRequired
                 classNames={{
-                  errorMessage: "text-left"
+                  errorMessage: "text-left",
                 }}
                 errorMessage={errors}
                 isInvalid={Boolean(errors)}

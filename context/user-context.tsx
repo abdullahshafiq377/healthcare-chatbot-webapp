@@ -37,10 +37,8 @@ const getSession = async () => {
 // Create the context
 export const UserContext = createContext<UserContextType>({
   user: null,
-  login: () => {
-  },
-  logout: () => {
-  }
+  login: () => {},
+  logout: () => {},
 });
 
 // Create a provider component

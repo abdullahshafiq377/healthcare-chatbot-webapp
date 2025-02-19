@@ -3,12 +3,12 @@
     "home": "Inicio",
     "chat": "Chat",
     "signIn": "Iniciar sesión",
-    "admin": "Admin"
+    "admin": "Administrador"
   },
   "HomePage": {
-    "title": "Vacúnate *highlight* a tu manera.",
+    "title": "Vacuna *highlight* a tu manera.",
     "highlight": "Conocimiento.",
-    "subtitle": "Impulsado por IA, rápido, confiable y amigable para el paciente.",
+    "subtitle": "Impulsado por IA, rápido, confiable y amigable con el paciente.",
     "button": "¡Regístrate ahora!"
   },
   "SignInPage": {
@@ -17,13 +17,14 @@
     "fields": {
       "email": "Correo electrónico",
       "password": "Contraseña",
-      "newAccount": "¿Crear una nueva cuenta?"
+      "newAccount": "¿Crear una nueva cuenta?",
+      "forgetPassword": "¿Olvidaste tu contraseña?"
     },
     "button": "Iniciar sesión"
   },
   "SignUpPage": {
     "title": "¡Únete hoy!",
-    "subtitle": "Crea tu cuenta para comenzar tu viaje de salud.",
+    "subtitle": "Crea tu cuenta para comenzar tu viaje de atención médica.",
     "fields": {
       "firstName": "Nombre",
       "lastName": "Apellido",
@@ -39,7 +40,7 @@
   },
   "AdminUsersPage": {
     "title": "Usuarios",
-    "subtitle": "Administra usuarios y sus datos.",
+    "subtitle": "Gestiona los usuarios y sus datos.",
     "table": {
       "NAME": "NOMBRE",
       "STATUS": "ESTADO",
@@ -69,7 +70,8 @@
   },
   "ChatsPage": {
     "chatHistory": "Historial de chat",
-    "conversation": "Conversación"
+    "conversation": "Conversación",
+    "noConversation": "No se encontraron conversaciones."
   },
   "ProfileDropdown": {
     "signedInAs": "Conectado como",
@@ -79,7 +81,7 @@
   },
   "ResetPasswordConfirmationModal": {
     "title": "Restablecer contraseña del usuario",
-    "message": "¿Estás seguro de que quieres restablecer la contraseña de este usuario? Esta acción es irreversible.",
+    "message": "¿Estás seguro de que deseas restablecer la contraseña de este usuario? Esta acción es irreversible.",
     "cancel": "Cancelar",
     "confirm": "Restablecer contraseña"
   },
@@ -98,6 +100,12 @@
     "cancel": "Cancelar",
     "confirm": "Reportar"
   },
+  "ForgetPasswordModal": {
+    "modalTitle": "Restablecer contraseña",
+    "email": "Correo electrónico",
+    "cancel": "Cancelar",
+    "confirm": "Restablecer"
+  },
   "ProfilePage": {
     "profileTitle": "Información del perfil",
     "profileDescription": "Ver y editar la información de tu perfil.",
@@ -110,7 +118,7 @@
     "currentPassword": "Contraseña actual",
     "newPassword": "Nueva contraseña",
     "confirmPassword": "Confirmar contraseña",
-    "privacyDescription": "Controla la configuración de privacidad.",
+    "privacyDescription": "Controla tu configuración de privacidad.",
     "updatePassword": "Actualizar contraseña",
     "myReportsTitle": "Mis reportes",
     "myReportsDescription": "Problemas reportados por ti junto con su estado actual.",
@@ -125,19 +133,19 @@
   },
   "DeleteReportConfirmationModal": {
     "title": "Eliminar reporte",
-    "message": "¿Estás seguro de que quieres eliminar este reporte? Esta acción es irreversible.",
+    "message": "¿Estás seguro de que deseas eliminar este reporte? Esta acción es irreversible.",
     "cancel": "Cancelar",
     "confirm": "Eliminar reporte"
   },
   "DeleteAccountConfirmationModal": {
     "title": "Eliminar cuenta",
-    "message": "¿Estás seguro de que quieres eliminar tu cuenta y todos los datos relacionados? Una vez eliminada, todos sus recursos y datos serán eliminados permanentemente.",
+    "message": "¿Estás seguro de que deseas eliminar tu cuenta y todos los datos relacionados? Una vez eliminada, todos sus recursos y datos serán eliminados permanentemente.",
     "cancel": "Cancelar",
     "confirm": "Eliminar cuenta"
   },
   "DeleteUserConfirmationModal": {
     "title": "Eliminar usuario",
-    "message": "¿Estás seguro de que quieres eliminar la cuenta de este usuario y todos los datos relacionados? Una vez eliminada, todos sus recursos y datos serán eliminados permanentemente.",
+    "message": "¿Estás seguro de que deseas eliminar la cuenta de este usuario y todos los datos relacionados? Una vez eliminada, todos sus recursos y datos serán eliminados permanentemente.",
     "cancel": "Cancelar",
     "confirm": "Eliminar usuario"
   }

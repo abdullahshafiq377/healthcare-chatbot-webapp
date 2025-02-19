@@ -70,7 +70,8 @@
   },
   "ChatsPage": {
     "chatHistory": "Chat history",
-    "conversation": "Conversation"
+    "conversation": "Conversation",
+    "noConversation": "No conversations found."
   },
   "ProfileDropdown": {
     "signedInAs": "Signed in as",

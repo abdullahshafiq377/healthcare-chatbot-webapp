@@ -7,43 +7,41 @@ import {
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@heroui/table";
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
 import {
   EyeIcon,
   PencilSquareIcon,
-  TrashIcon
+  TrashIcon,
 } from "@heroicons/react/24/solid";
 import { useDisclosure } from "@heroui/modal";
 import { useTranslations } from "next-intl";
 
 import { useRouter } from "@/i18n/routing";
-import ResetPasswordConfirmationModal
-  from "@/components/reset-password-confirmation-modal";
+import ResetPasswordConfirmationModal from "@/components/reset-password-confirmation-modal";
 import { UserDataType } from "@/types/dataTypes";
 import { axiosInstance } from "@/utils/axiosInstance";
-import DeleteUserConfirmationModal
-  from "@/components/delete-user-confirmation-modal";
+import DeleteUserConfirmationModal from "@/components/delete-user-confirmation-modal";
 
 export const columns = [
   { name: "NAME", uid: "name" },
   { name: "ROLE", uid: "role" },
   { name: "STATUS", uid: "status" },
-  { name: "ACTIONS", uid: "actions" }
+  { name: "ACTIONS", uid: "actions" },
 ];
 
 const statusColorMap = {
   active: "success",
   paused: "danger",
-  vacation: "warning"
+  vacation: "warning",
 };
 
 export default function UsersTable({
-                                     data,
-                                     fetchData
-                                   }: {
+  data,
+  fetchData,
+}: {
   data: UserDataType[];
   fetchData: () => void;
 }) {
@@ -53,12 +51,14 @@ export default function UsersTable({
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onOpenChange: onDeleteOpenChange,
-    onClose: onDeleteClose
+    onClose: onDeleteClose,
   } = useDisclosure();
 
   const [selectedUserForResetPassword, setSelectedUserForResetPassword] =
     useState<string | null>(null);
-  const [selectedUserForDelete, setSelectedUserForDelete] = useState<string | null>(null);
+  const [selectedUserForDelete, setSelectedUserForDelete] = useState<
+    string | null
+  >(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isResetPasswordLoading, setIsResetPasswordLoading] = useState(false);
 
@@ -76,7 +76,7 @@ export default function UsersTable({
       setIsResetPasswordLoading(true);
       console.log(selectedUserForResetPassword);
       const res = await axiosInstance.put(
-        `/users/reset-password/${selectedUserForResetPassword}`
+        `/users/reset-password/${selectedUserForResetPassword}`,
       );
 
       console.log(res);
@@ -100,7 +100,7 @@ export default function UsersTable({
       setIsDeleteLoading(true);
       console.log(selectedUserForDelete);
       const res = await axiosInstance.delete(
-        `/users/admin/delete/${selectedUserForDelete}`
+        `/users/admin/delete/${selectedUserForDelete}`,
       );
 
       console.log(res);
@@ -171,9 +171,10 @@ export default function UsersTable({
             </Tooltip>
             <Tooltip color="danger" content={t("tooltip.delete")}>
               <span
+                className="text-lg text-danger cursor-pointer active:opacity-50"
                 role="button"
                 onClick={() => handleDeleteClick(user._id)}
-                className="text-lg text-danger cursor-pointer active:opacity-50">
+              >
                 <TrashIcon height={20} width={20} />
               </span>
             </Tooltip>
@@ -208,15 +209,17 @@ export default function UsersTable({
         </TableBody>
       </Table>
       <ResetPasswordConfirmationModal
+        isLoading={isResetPasswordLoading}
         isOpen={isOpen}
         onConfirm={handleResetPassword}
         onOpenChange={onOpenChange}
-        isLoading={isResetPasswordLoading}
       />
-      <DeleteUserConfirmationModal isOpen={isDeleteOpen}
-                                   onOpenChange={onDeleteOpenChange}
-                                   onConfirm={handleDelete}
-                                   isLoading={isDeleteLoading} />
+      <DeleteUserConfirmationModal
+        isLoading={isDeleteLoading}
+        isOpen={isDeleteOpen}
+        onConfirm={handleDelete}
+        onOpenChange={onDeleteOpenChange}
+      />
     </>
   );
 }

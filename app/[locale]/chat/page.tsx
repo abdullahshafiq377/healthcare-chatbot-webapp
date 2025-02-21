@@ -4,7 +4,7 @@ import {
   CalendarIcon,
   ChatBubbleLeftRightIcon,
   PaperAirplaneIcon,
-  PlusIcon
+  PlusIcon,
 } from "@heroicons/react/24/solid";
 import { Divider } from "@heroui/divider";
 import { Textarea } from "@heroui/input";
@@ -35,7 +35,7 @@ export default function ChatPage() {
   const [conversations, setConversations] = useState<CategorizedConversations>({
     today: [],
     last7Days: [],
-    older: []
+    older: [],
   });
   const [isConversationsLoading, setIsConversationsLoading] = useState(false);
   const [selectedConversationId, setSelectedConversationId] = useState<
@@ -57,7 +57,7 @@ export default function ChatPage() {
       setIsMessageSentLoading(true);
       if (!convoId) {
         const newConversation = await axiosInstance.post("/chat/conversation", {
-          title: messageText
+          title: messageText,
         });
 
         console.log(newConversation?.data?._id);
@@ -74,7 +74,7 @@ export default function ChatPage() {
         updatedAt: new Date().toISOString(),
         text: messageText,
         conversationId: convoId ? convoId : "",
-        sender: "user"
+        sender: "user",
       };
 
       setMessageText("");
@@ -84,7 +84,7 @@ export default function ChatPage() {
       scrollToBottom(chatContainerRef);
       const res = await axiosInstance.post("/chat/message", {
         conversationId: convoId,
-        text: messageText
+        text: messageText,
       });
 
       console.log(res?.data);
@@ -109,7 +109,7 @@ export default function ChatPage() {
       if (selectedConversationId) {
         setIsMessagesLoading(true);
         const res = await axiosInstance.get(
-          `/chat/messages/${selectedConversationId}`
+          `/chat/messages/${selectedConversationId}`,
         );
 
         console.log(res.data);
@@ -131,7 +131,7 @@ export default function ChatPage() {
     try {
       setIsConversationsLoading(true);
       const res = await axiosInstance.get<UserConversationType[]>(
-        "/chat/conversations"
+        "/chat/conversations",
       );
 
       if (res?.data) {
@@ -150,7 +150,7 @@ export default function ChatPage() {
     const categorizedConversations: CategorizedConversations = {
       today: [],
       last7Days: [],
-      older: []
+      older: [],
     };
 
     conversations.forEach((conversation) => {
@@ -189,14 +189,13 @@ export default function ChatPage() {
       console.log("scrolling to bottom...");
       ref.current.scrollTo({
         top: ref.current.scrollHeight,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
 
   return (
-    <div
-      className="flex gap-2 h-[calc(100vh-64px-48px)] scroll-smooth flex-col md:flex-row md:gap-5">
+    <div className="flex gap-2 h-[calc(100vh-64px-48px)] scroll-smooth flex-col md:flex-row md:gap-5">
       <Card
         isBlurred
         className="w-1/4 border-none bg-default/10 dark:bg-white/5 hidden md:flex"
@@ -351,8 +350,7 @@ export default function ChatPage() {
           </NavbarMenu>
         </Navbar>
       </div>
-      <Card
-        className="flex w-full md:w-3/4 border-none bg-default/10 dark:bg-white/5">
+      <Card className="flex w-full md:w-3/4 border-none bg-default/10 dark:bg-white/5">
         <CardHeader>
           <div className="flex gap-2 justify-center items-center">
             <ChatBubbleLeftRightIcon height={20} width={20} />
@@ -371,18 +369,16 @@ export default function ChatPage() {
                 <SentMessage key={message?._id} text={message?.text} />
               ) : (
                 <ReceivedMessage key={message?._id} text={message?.text} />
-              )
+              ),
             )
           ) : (
-            <div
-              className="flex flex-col gap-2 text-center h-full w-full items-center justify-center">
+            <div className="flex flex-col gap-2 text-center h-full w-full items-center justify-center">
               <ChatBubbleLeftRightIcon
                 className="text-gray-400 dark:text-gray-500"
                 height={40}
                 width={40}
               />
-              <span
-                className="text-3xl font-medium text-gray-600 dark:text-gray-300">
+              <span className="text-3xl font-medium text-gray-600 dark:text-gray-300">
                 What can I help you with today?
               </span>
               <span className="text-sm text-gray-500 dark:text-gray-400">

@@ -40,8 +40,7 @@ export default function Home() {
 
   return (
     <>
-      <section
-        className="flex absolute w-full px-6 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 py-8 md:py-10 sm:w-full sm:max-w-none z-20">
+      <section className="flex absolute w-full px-6 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 py-8 md:py-10 sm:w-full sm:max-w-none z-20">
         <div className="inline-block  text-center justify-center">
           <div
             className="flex justify-center items-center mx-auto h-16 w-16 bg-gradient-to-t from-lime-500/30 to-lime-500/30
@@ -77,9 +76,9 @@ export default function Home() {
               buttonStyles({
                 radius: "full",
                 variant: "shadow",
-                size: "lg"
+                size: "lg",
               }),
-              "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+              "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
             )}
             href="/sign-up"
           >

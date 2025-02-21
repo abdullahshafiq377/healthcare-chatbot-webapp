@@ -149,7 +149,9 @@ export default function UsersTable({
           </Chip>
         );
       case "actions":
-        return (
+        return user?.role === "admin" ? (
+          ""
+        ) : (
           <div className="relative flex items-center gap-2">
             <Tooltip content={t("tooltip.details")}>
               <span

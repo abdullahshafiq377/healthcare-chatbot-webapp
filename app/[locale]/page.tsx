@@ -4,16 +4,29 @@ import Lottie from "lottie-react";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 import clsx from "clsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDisclosure } from "@heroui/modal";
 
 import { subtitle, title } from "@/components/primitives";
 import animationData from "@/assets/animations/heartbeat.json";
 import { Link, useRouter } from "@/i18n/routing";
 import { axiosInstance } from "@/utils/axiosInstance";
+import LegalNoticeModal from "@/components/legal-notice-modal";
 
 export default function Home() {
   const t = useTranslations("HomePage");
 
+  const [selected, setSelected] = useState(false);
+  const [hasAcceptedLegalNotice, setHasAcceptedLegalNotice] = useState<boolean>(
+    () => {
+      return (
+        typeof window !== "undefined" &&
+        localStorage.getItem("hasAcceptedLegalNotice") === "true"
+      );
+    },
+  );
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const router = useRouter();
 
   const verifySession = async () => {
@@ -28,7 +41,6 @@ export default function Home() {
           router.replace("/chat");
         }
       }
-      console.log("Session", session);
     } catch (e) {
       console.log(e);
     }
@@ -38,20 +50,30 @@ export default function Home() {
     verifySession();
   }, []);
 
+  useEffect(() => {
+    if (!hasAcceptedLegalNotice) {
+      onOpen();
+    }
+  }, [hasAcceptedLegalNotice]);
+
+  const handleAcceptLegalNotice = () => {
+    if (selected) {
+      localStorage.setItem("hasAcceptedLegalNotice", "true");
+    }
+    setHasAcceptedLegalNotice(true);
+    onClose();
+  };
+
   return (
     <>
       <section className="flex absolute w-full px-6 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 py-8 md:py-10 sm:w-full sm:max-w-none z-20">
-        <div className="inline-block  text-center justify-center">
-          <div
-            className="flex justify-center items-center mx-auto h-16 w-16 bg-gradient-to-t from-lime-500/30 to-lime-500/30
-         rounded-full"
-          >
+        <div className="inline-block text-center justify-center">
+          <div className="flex justify-center items-center mx-auto h-16 w-16 bg-gradient-to-t from-lime-500/30 to-lime-500/30 rounded-full">
             <div className="h-10 w-10">
               <Lottie animationData={animationData} loop={true} />
             </div>
           </div>
           <br />
-          {/*Vaccine Knowledge. Your Way.*/}
           <div className={title({ size: "lg" })}>
             {t("title").split("*highlight*")[0].trim()}
           </div>
@@ -63,14 +85,10 @@ export default function Home() {
           <div className={title({ size: "lg" })}>
             {t("title").split("*highlight*")[1].trim()}
           </div>
-          {/*<span className={title({ size: "lg" })}>Your Way.</span>*/}
           <div className={subtitle({ class: "mt-4" })}>{t("subtitle")}</div>
         </div>
 
         <div className="flex gap-4 sm:gap-3 flex-wrap justify-center">
-          {/*<Button variant="shadow" color="secondary" radius="full">*/}
-          {/*  Register as a Professional*/}
-          {/*</Button>*/}
           <Link
             className={clsx(
               buttonStyles({
@@ -87,13 +105,13 @@ export default function Home() {
           </Link>
         </div>
 
-        {/*<div className="mt-8">*/}
-        {/*  <Snippet hideCopyButton hideSymbol variant="bordered">*/}
-        {/*    <span>*/}
-        {/*      Get started by editing <Code color="primary">app/page.tsx</Code>*/}
-        {/*    </span>*/}
-        {/*  </Snippet>*/}
-        {/*</div>*/}
+        <LegalNoticeModal
+          isOpen={isOpen}
+          selected={selected}
+          setSelected={setSelected}
+          onAccept={handleAcceptLegalNotice}
+          onOpenChange={onOpenChange}
+        />
       </section>
     </>
   );

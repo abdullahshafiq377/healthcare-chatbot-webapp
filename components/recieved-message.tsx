@@ -1,5 +1,7 @@
 import { Card, CardBody } from "@heroui/card";
 import { Skeleton } from "@heroui/skeleton";
+import { Button } from "@heroui/button";
+import { SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
 const ReceivedMessage = ({
   text,
@@ -8,9 +10,26 @@ const ReceivedMessage = ({
   text: string;
   isLoading?: boolean;
 }) => {
+  const speak = (text: string) => {
+    if (!window.speechSynthesis) {
+      alert("Text-to-Speech is not supported in this browser.");
+
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US"; // Change language if needed
+    utterance.rate = 1; // Speed of speech (0.5 to 2)
+    utterance.pitch = 1; // Voice pitch
+    utterance.volume = 1; // Volume (0 to 1)
+
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
-    <div className="flex justify-start">
-      <Card className="rounded-tl-none max-w-[280px] md:max-w-lg border dark:border-default/50">
+    <div className="flex justify-start items-end">
+      <Card className="rounded-tl-none max-w-[280px] md:max-w-md border dark:border-default/50">
         <CardBody>
           {isLoading ? (
             <div className="flex flex-col gap-3">
@@ -29,6 +48,9 @@ const ReceivedMessage = ({
           )}
         </CardBody>
       </Card>
+      <Button isIconOnly className="bg-transparent" onPress={() => speak(text)}>
+        <SpeakerWaveIcon height={20} width={20} />
+      </Button>
     </div>
   );
 };

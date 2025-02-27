@@ -31,10 +31,8 @@ export default function ReportModal({
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      console.log(reportData);
       const res = await axiosInstance.post("/reports", reportData);
 
-      console.log(res);
       if (res.status === 201) {
       }
       setShowSuccessMessage(true);
@@ -96,12 +94,13 @@ export default function ReportModal({
               />
             </ModalBody>
             <ModalFooter>
-              <Button variant="light" onPress={onClose}>
+              <Button radius="full" variant="light" onPress={onClose}>
                 {t("cancel")}
               </Button>
               <Button
                 className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
                 isLoading={isLoading}
+                radius="full"
                 onPress={handleSubmit}
               >
                 {t("confirm")}

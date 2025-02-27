@@ -64,11 +64,17 @@ export default function PrivacyPolicyModal({
               </p>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button
+                color="danger"
+                radius="full"
+                variant="light"
+                onPress={onClose}
+              >
                 {t("reject")}
               </Button>
               <Button
                 className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
+                radius="full"
                 onPress={onAccept}
               >
                 {t("accept")}

@@ -49,7 +49,6 @@ export default function UserDetailsPage() {
           `/chat/admin/messages/${selectedConversationId}`,
         );
 
-        console.log(res.data);
         if (res?.data) {
           setMessages(res.data);
           setIsMessagesLoading(false);

@@ -43,7 +43,7 @@ export default function LanguageSwitcher() {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="bordered">
+        <Button radius="full" variant="bordered">
           {locals.find((item) => item.value === currentLocale)?.label}
         </Button>
       </DropdownTrigger>

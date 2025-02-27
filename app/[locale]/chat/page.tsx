@@ -3,8 +3,11 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import {
   CalendarIcon,
   ChatBubbleLeftRightIcon,
+  EnvelopeIcon,
   PaperAirplaneIcon,
   PlusIcon,
+  ShareIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/solid";
 import { Divider } from "@heroui/divider";
 import { Textarea } from "@heroui/input";
@@ -12,6 +15,9 @@ import { Button } from "@heroui/button";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { Navbar, NavbarMenu, NavbarMenuToggle } from "@heroui/navbar";
+import { useDisclosure } from "@heroui/modal";
+import clsx from "clsx";
+import { button as buttonStyles } from "@heroui/theme";
 
 import ConversationSection from "@/components/conversation-section";
 import ConversationItem from "@/components/conversation-item";
@@ -20,6 +26,8 @@ import ReceivedMessage from "@/components/recieved-message";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { MessageType, UserConversationType } from "@/types/dataTypes";
 import Loader from "@/components/loader";
+import ShareModal from "@/components/share-with-friend-modal";
+import { Link } from "@/i18n/routing";
 
 export interface CategorizedConversations {
   today: UserConversationType[];
@@ -32,6 +40,13 @@ export default function ChatPage() {
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const {
+    isOpen: isShareOpen,
+    onOpen: onShareOpen,
+    onOpenChange: onShareOpenChange,
+    onClose: onShareClose,
+  } = useDisclosure();
+
   const [conversations, setConversations] = useState<CategorizedConversations>({
     today: [],
     last7Days: [],
@@ -41,7 +56,16 @@ export default function ChatPage() {
   const [selectedConversationId, setSelectedConversationId] = useState<
     string | null
   >(null);
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messages, setMessages] = useState<MessageType[]>([
+    {
+      _id: "initial_message",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      text: "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+      conversationId: "",
+      sender: "bot",
+    },
+  ]);
   const [messageText, setMessageText] = useState<string>("");
   const [isMessageSentLoading, setIsMessageSentLoading] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
@@ -55,12 +79,14 @@ export default function ChatPage() {
       let convoId = selectedConversationId;
 
       setIsMessageSentLoading(true);
+      setTimeout(() => {
+        scrollToBottom(chatContainerRef);
+      }, 100);
       if (!convoId) {
         const newConversation = await axiosInstance.post("/chat/conversation", {
           title: messageText,
         });
 
-        console.log(newConversation?.data?._id);
         convoId = newConversation?.data?._id;
         const newConversations = { ...conversations };
 
@@ -81,13 +107,14 @@ export default function ChatPage() {
       let dummyMessages = [...messages, dummyMessage];
 
       setMessages([...dummyMessages]);
-      scrollToBottom(chatContainerRef);
+      setTimeout(() => {
+        scrollToBottom(chatContainerRef);
+      }, 100);
       const res = await axiosInstance.post("/chat/message", {
         conversationId: convoId,
         text: messageText,
       });
 
-      console.log(res?.data);
       if (res?.data) {
         const updatedMessages = [...dummyMessages];
 
@@ -96,7 +123,9 @@ export default function ChatPage() {
         updatedMessages.push(res?.data?.botMessage);
         setMessages([...updatedMessages]);
         setIsMessageSentLoading(false);
-        scrollToBottom(chatContainerRef);
+        setTimeout(() => {
+          scrollToBottom(chatContainerRef);
+        }, 100);
       }
     } catch (e) {
       console.log(e);
@@ -112,9 +141,18 @@ export default function ChatPage() {
           `/chat/messages/${selectedConversationId}`,
         );
 
-        console.log(res.data);
         if (res?.data) {
-          setMessages(res.data);
+          setMessages([
+            {
+              _id: "initial_message",
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              text: "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+              conversationId: "",
+              sender: "bot",
+            },
+            ...res.data,
+          ]);
           setIsMessagesLoading(false);
           setTimeout(() => {
             scrollToBottom(chatContainerRef);
@@ -172,7 +210,16 @@ export default function ChatPage() {
 
   const handleNewConversation = () => {
     setSelectedConversationId(null);
-    setMessages([]);
+    setMessages([
+      {
+        _id: "initial_message",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        text: "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+        conversationId: "",
+        sender: "bot",
+      },
+    ]);
     setIsMenuOpen(false);
   };
 
@@ -186,7 +233,6 @@ export default function ChatPage() {
 
   const scrollToBottom = (ref: React.RefObject<HTMLDivElement>) => {
     if (ref.current) {
-      console.log("scrolling to bottom...");
       ref.current.scrollTo({
         top: ref.current.scrollHeight,
         behavior: "smooth",
@@ -350,7 +396,7 @@ export default function ChatPage() {
           </NavbarMenu>
         </Navbar>
       </div>
-      <Card className="flex w-full md:w-3/4 border-none bg-default/10 dark:bg-white/5">
+      <Card className="flex w-full md:w-2/4 border-none bg-default/10 dark:bg-white/5">
         <CardHeader>
           <div className="flex gap-2 justify-center items-center">
             <ChatBubbleLeftRightIcon height={20} width={20} />
@@ -363,29 +409,15 @@ export default function ChatPage() {
           className="p-4 flex flex-col gap-5 h-[calc(100vh-64px-48px-120px)] overflow-y-auto"
         >
           <Loader isLoading={isMessagesLoading} />
-          {messages.length > 0 ? (
-            messages?.map((message) =>
-              message?.sender === "user" ? (
-                <SentMessage key={message?._id} text={message?.text} />
-              ) : (
-                <ReceivedMessage key={message?._id} text={message?.text} />
-              ),
-            )
-          ) : (
-            <div className="flex flex-col gap-2 text-center h-full w-full items-center justify-center">
-              <ChatBubbleLeftRightIcon
-                className="text-gray-400 dark:text-gray-500"
-                height={40}
-                width={40}
-              />
-              <span className="text-3xl font-medium text-gray-600 dark:text-gray-300">
-                What can I help you with today?
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                I can answer your questions and queries related to vaccines.
-              </span>
-            </div>
-          )}
+          {messages.length > 0
+            ? messages?.map((message) =>
+                message?.sender === "user" ? (
+                  <SentMessage key={message?._id} text={message?.text} />
+                ) : (
+                  <ReceivedMessage key={message?._id} text={message?.text} />
+                ),
+              )
+            : ""}
           {isMessageSentLoading && <ReceivedMessage isLoading text="" />}
         </div>
         <Divider />
@@ -410,6 +442,7 @@ export default function ChatPage() {
             <Button
               isIconOnly
               className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
+              radius="full"
               onPress={sendMessage}
             >
               <PaperAirplaneIcon height={20} width={20} />
@@ -417,7 +450,106 @@ export default function ChatPage() {
           </div>
         </CardFooter>
       </Card>
+      <div className="flex flex-col gap-4 w-full md:w-1/4">
+        <Card className="flex w-full h-1/3 border dark:border-gray-700 bg-default/10 dark:bg-white/5">
+          <CardHeader>
+            <div className="flex items-center justify-center gap-2">
+              <ShareIcon height={20} width={20} />
+              <span className="text-lg font-semibold">Refer a Friend</span>
+            </div>
+          </CardHeader>
+          <Divider />
+          <CardBody>
+            <div className="flex flex-col gap-2 justify-between h-full">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Know someone who could benefit from VaxSupport? Spread the word
+                and share it with them!
+              </p>
+              {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
+              {/*  <img className="h-16" src={shareImage.src} alt="share" />*/}
+              {/*</div>*/}
+              <Button
+                className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
+                radius="full"
+                onPress={onShareOpen}
+              >
+                Share now!
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+
+        <Card className="flex w-full h-1/3 border-none bg-default/10 dark:bg-white/5">
+          <CardHeader>
+            <div className="flex gap-2 justify-center items-center">
+              <EnvelopeIcon height={20} width={20} />
+              <span className={"text-lg font-medium"}>Submit feedback</span>
+            </div>
+          </CardHeader>
+          <Divider />
+          <CardBody>
+            <div className="flex flex-col gap-2 justify-between h-full">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Was there a response that wasn’t helpful or transparent enough?
+                Tell us about it!
+              </p>
+              {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
+              {/*  <img className="h-16" src={shareImage.src} alt="share" />*/}
+              {/*</div>*/}
+              <Link
+                className={clsx(
+                  buttonStyles({
+                    size: "md",
+                    radius: "full",
+                  }),
+                  "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+                )}
+                href="mailto:info@vaccifi.co?subject=Response%20Feedback"
+              >
+                Submit feedback
+              </Link>
+            </div>
+          </CardBody>
+        </Card>
+        <Card className="flex w-full h-1/3 border-none bg-default/10 dark:bg-white/5">
+          <CardHeader>
+            <div className="flex gap-2 justify-center items-center">
+              <SparklesIcon height={20} width={20} />
+              <span className={"text-lg font-medium"}>Enhancements</span>
+            </div>
+          </CardHeader>
+          <Divider />
+          <CardBody>
+            <div className="flex flex-col gap-2 justify-between h-full">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Is there a feature you’d like to see built to support vaccine
+                decisions?
+              </p>
+              {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
+              {/*  <img className="h-16" src={shareImage.src} alt="share" />*/}
+              {/*</div>*/}
+              <Link
+                className={clsx(
+                  buttonStyles({
+                    size: "md",
+                    radius: "full",
+                  }),
+                  "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+                )}
+                href="mailto:info@vaccifi.co?subject=Site%20Enhancments"
+              >
+                Request enhancements
+              </Link>
+            </div>
+          </CardBody>
+        </Card>
+      </div>
       <Loader isLoading={isConversationsLoading} />
+      <ShareModal
+        isOpen={isShareOpen}
+        onClose={onShareClose}
+        onOpenChange={onShareOpenChange}
+      />
     </div>
   );
 }

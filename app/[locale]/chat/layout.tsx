@@ -17,9 +17,9 @@ export default function ChatLayout({
       if (!session?.data?.isAuthenticated) {
         router.replace("/");
       }
-      console.log("Session", session);
     } catch (e) {
       console.log(e);
+      router.replace("/");
     }
   };
 

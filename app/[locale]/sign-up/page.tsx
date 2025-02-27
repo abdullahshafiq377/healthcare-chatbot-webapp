@@ -38,6 +38,10 @@ export default function SignupPage() {
     password: "",
     firstName: "",
     lastName: "",
+    phone: "",
+    birthYear: "",
+    country: "",
+    state: "",
   });
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = React.useState(false);
@@ -82,18 +86,84 @@ export default function SignupPage() {
     return null;
   };
 
+  const getPhoneError = (value: string): string | null => {
+    if (!value) {
+      return "Phone number is required";
+    }
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/; // E.164 format
+
+    if (!phoneRegex.test(value)) {
+      return "Please enter a valid phone number";
+    }
+
+    return null;
+  };
+
+  const getCountryError = (value: string): string | null => {
+    if (!value) {
+      return "Country is required";
+    }
+    if (value.length < 2 || value.length > 56) {
+      return "Country name must be between 2 and 56 characters";
+    }
+
+    return null;
+  };
+
+  const getStateError = (value: string): string | null => {
+    if (!value) {
+      return "State is required";
+    }
+    if (value.length < 2 || value.length > 50) {
+      return "State name must be between 2 and 50 characters";
+    }
+
+    return null;
+  };
+
+  const getBirthYearError = (value: string): string | null => {
+    if (!value) {
+      return "Birth year is required";
+    }
+    const birthYear = parseInt(value, 10);
+    const currentYear = new Date().getFullYear();
+    const minYear = currentYear - 120; // Assuming max age 120
+
+    if (isNaN(birthYear) || birthYear < minYear || birthYear > currentYear) {
+      return `Please enter a valid birth year between ${minYear} and ${currentYear}`;
+    }
+
+    return null;
+  };
+
   const handleSignUpClick = () => {
     const newErrors: Errors = {};
 
     // Password validation
     const passwordError = getPasswordError(credentials.password);
     const emailError = getEmailError(credentials.email);
+    const birthYear = getBirthYearError(credentials.birthYear);
+    const phoneError = getPhoneError(credentials.phone);
+    const countryError = getCountryError(credentials.country);
+    const stateError = getStateError(credentials.state);
 
     if (passwordError) {
       newErrors.password = passwordError;
     }
     if (emailError) {
       newErrors.email = emailError;
+    }
+    if (birthYear) {
+      newErrors.birthYear = birthYear;
+    }
+    if (phoneError) {
+      newErrors.phone = phoneError;
+    }
+    if (countryError) {
+      newErrors.country = countryError;
+    }
+    if (stateError) {
+      newErrors.state = stateError;
     }
     if (credentials.firstName.length === 0) {
       newErrors.firstName = "First name is required";
@@ -108,7 +178,6 @@ export default function SignupPage() {
 
     // Clear errors and submit
     setErrors({});
-    console.log(credentials);
     onOpen();
   };
 
@@ -116,9 +185,8 @@ export default function SignupPage() {
     setIsLoading(true);
     onClose();
     try {
-      const res = await axiosInstance.post("/auth/register", credentials);
+      await axiosInstance.post("/auth/register", credentials);
 
-      console.log(res);
       setIsLoading(false);
       setResponseMessage({
         type: "success",
@@ -139,14 +207,7 @@ export default function SignupPage() {
 
   return (
     <div>
-      {/*<div className="absolute top-0 left-0 w-[100vw] h-full z-0 object-fill">*/}
-      {/*  <img*/}
-      {/*    alt="background"*/}
-      {/*    className="opacity-20 dark:opacity-10 h-[100vh] w-[100vw]"*/}
-      {/*    src={bgImage.src}*/}
-      {/*  />*/}
-      {/*</div>*/}
-      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
         <Card
           isBlurred
           className="border-none bg-background/40 dark:bg-white/5"
@@ -215,6 +276,103 @@ export default function SignupPage() {
                       setCredentials((prevState) => ({
                         ...prevState,
                         lastName: value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="flex gap-4 w-full">
+                  <Input
+                    isRequired
+                    classNames={{
+                      inputWrapper: "bg-white dark:bg-gray-950",
+                      errorMessage: "text-left",
+                    }}
+                    errorMessage={errors.phone}
+                    isInvalid={Boolean(errors?.phone)}
+                    label={t("fields.phone")}
+                    labelPlacement="outside"
+                    name="phone"
+                    placeholder="+1 234 567 890"
+                    radius="sm"
+                    type="text"
+                    value={credentials.phone}
+                    variant="bordered"
+                    onValueChange={(value) =>
+                      setCredentials((prevState) => ({
+                        ...prevState,
+                        phone: value,
+                      }))
+                    }
+                  />
+
+                  <Input
+                    isRequired
+                    classNames={{
+                      inputWrapper: "bg-white dark:bg-gray-950",
+                      errorMessage: "text-left",
+                    }}
+                    errorMessage={errors.birthYear}
+                    isInvalid={Boolean(errors?.birthYear)}
+                    label={t("fields.birthYear")}
+                    labelPlacement="outside"
+                    name="birthYear"
+                    placeholder="1990"
+                    radius="sm"
+                    type="text"
+                    value={credentials.birthYear}
+                    variant="bordered"
+                    onValueChange={(value) =>
+                      setCredentials((prevState) => ({
+                        ...prevState,
+                        birthYear: value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="flex gap-4 w-full">
+                  <Input
+                    isRequired
+                    classNames={{
+                      inputWrapper: "bg-white dark:bg-gray-950",
+                      errorMessage: "text-left",
+                    }}
+                    errorMessage={errors.country}
+                    isInvalid={Boolean(errors?.country)}
+                    label={t("fields.country")}
+                    labelPlacement="outside"
+                    name="country"
+                    placeholder="USA"
+                    radius="sm"
+                    type="text"
+                    value={credentials.country}
+                    variant="bordered"
+                    onValueChange={(value) =>
+                      setCredentials((prevState) => ({
+                        ...prevState,
+                        country: value,
+                      }))
+                    }
+                  />
+                  <Input
+                    isRequired
+                    classNames={{
+                      inputWrapper: "bg-white dark:bg-gray-950",
+                      errorMessage: "text-left",
+                    }}
+                    errorMessage={errors.state}
+                    isInvalid={Boolean(errors?.state)}
+                    label={t("fields.state")}
+                    labelPlacement="outside"
+                    name="state"
+                    placeholder="Chicago"
+                    radius="sm"
+                    type="text"
+                    value={credentials.state}
+                    variant="bordered"
+                    onValueChange={(value) =>
+                      setCredentials((prevState) => ({
+                        ...prevState,
+                        state: value,
                       }))
                     }
                   />

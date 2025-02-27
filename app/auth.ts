@@ -7,7 +7,6 @@ export async function getUserSession() {
   const Cookies = await cookies();
   const cookie = Cookies.get("connect.sid")?.value;
 
-  console.log("cookies", Cookies);
   if (!cookie) return null;
 
   try {

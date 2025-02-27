@@ -85,7 +85,6 @@ export default function SigninPage() {
       newErrors.email = emailError;
     }
 
-    console.log("Error:", newErrors);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
 
@@ -94,14 +93,12 @@ export default function SigninPage() {
 
     // Clear errors and submit
     setErrors({});
-    console.log(credentials);
 
     try {
       setIsLoading(true);
       const res = await axiosInstance.post("auth/login", credentials);
 
       login(res?.data?.user);
-      console.log(res?.data);
       setIsLoading(false);
       if (res?.data?.user?.role === "admin") {
         router.push("/admin/users");

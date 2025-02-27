@@ -72,11 +72,8 @@ export default function ReportsTable({
   const handleDeleteReport = async () => {
     try {
       setIsDeleteLoading(true);
-      const res = await axiosInstance.delete(
-        `/reports/${selectedReportForDelete}`,
-      );
+      await axiosInstance.delete(`/reports/${selectedReportForDelete}`);
 
-      console.log(res?.data);
       setIsDeleteLoading(false);
       onConfirmDeleteModalClose();
       fetchData();

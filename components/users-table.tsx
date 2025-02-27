@@ -12,7 +12,7 @@ import {
 import { Chip } from "@heroui/chip";
 import { User } from "@heroui/user";
 import {
-  EyeIcon,
+  ChatBubbleLeftRightIcon,
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
@@ -74,12 +74,10 @@ export default function UsersTable({
   const handleResetPassword = async () => {
     try {
       setIsResetPasswordLoading(true);
-      console.log(selectedUserForResetPassword);
-      const res = await axiosInstance.put(
+      await axiosInstance.put(
         `/users/reset-password/${selectedUserForResetPassword}`,
       );
 
-      console.log(res);
       setIsResetPasswordLoading(false);
       onClose();
     } catch (e) {
@@ -98,12 +96,10 @@ export default function UsersTable({
   const handleDelete = async () => {
     try {
       setIsDeleteLoading(true);
-      console.log(selectedUserForDelete);
-      const res = await axiosInstance.delete(
+      await axiosInstance.delete(
         `/users/admin/delete/${selectedUserForDelete}`,
       );
 
-      console.log(res);
       setIsDeleteLoading(false);
       fetchData();
       onDeleteClose();
@@ -153,13 +149,13 @@ export default function UsersTable({
           ""
         ) : (
           <div className="relative flex items-center gap-2">
-            <Tooltip content={t("tooltip.details")}>
+            <Tooltip content={t("tooltip.chatHistory")}>
               <span
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
                 role="button"
                 onClick={() => router.push(`/admin/users/${user._id}`)}
               >
-                <EyeIcon height={20} width={20} />
+                <ChatBubbleLeftRightIcon height={20} width={20} />
               </span>
             </Tooltip>
             <Tooltip content={t("tooltip.resetPassword")}>

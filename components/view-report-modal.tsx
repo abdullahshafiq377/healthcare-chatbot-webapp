@@ -32,11 +32,10 @@ export default function ViewReportModal({
   const handleUpdateStatus = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.put(`/reports/${data?._id}`, {
+      await axiosInstance.put(`/reports/${data?._id}`, {
         status: data?.status === "open" ? "resolved" : "open",
       });
 
-      console.log(res.data);
       setLoading(false);
       onClose();
       await fetchData();
@@ -73,7 +72,7 @@ export default function ViewReportModal({
               )}
             </ModalBody>
             <ModalFooter>
-              <Button variant="light" onPress={onClose}>
+              <Button radius="full" variant="light" onPress={onClose}>
                 {t("close")}
               </Button>
               <Button
@@ -84,6 +83,7 @@ export default function ViewReportModal({
                 }
                 color={data?.status === "open" ? "default" : "danger"}
                 isLoading={loading}
+                radius="full"
                 onPress={handleUpdateStatus}
               >
                 {t(data?.status === "open" ? "markAsResolved" : "markAsOpen")}

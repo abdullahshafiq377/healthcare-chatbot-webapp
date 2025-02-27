@@ -39,12 +39,13 @@ export default function DeleteReportConfirmationModal({
               <p>{t("message")}</p>
             </ModalBody>
             <ModalFooter>
-              <Button variant="light" onPress={onClose}>
+              <Button radius="full" variant="light" onPress={onClose}>
                 {t("cancel")}
               </Button>
               <Button
                 color="danger"
                 isLoading={isLoading}
+                radius="full"
                 variant="ghost"
                 onPress={onConfirm}
               >

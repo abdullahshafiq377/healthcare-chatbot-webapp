@@ -15,7 +15,6 @@ const ReportsPage = () => {
       setIsLoading(true);
       const res = await axiosInstance.get("/reports");
 
-      console.log(res?.data);
       setReports(res.data);
       setIsLoading(false);
     } catch (e) {

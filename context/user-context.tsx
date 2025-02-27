@@ -21,8 +21,6 @@ const getSession = async () => {
     const response = await axiosInstance.get("/auth/check-session");
 
     if (response.status === 200) {
-      console.log(response?.data);
-
       return response.data.user;
     } else {
       return null;
@@ -47,8 +45,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     getSession().then((res) => {
-      console.log(res);
-
       setUser(res);
     });
   }, []);

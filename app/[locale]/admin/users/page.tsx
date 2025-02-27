@@ -14,7 +14,6 @@ const UsersPage = () => {
     try {
       const res = await axiosInstance.get("/users");
 
-      console.log(res?.data);
       setUsers(res?.data);
       setIsLoading(false);
     } catch (e) {

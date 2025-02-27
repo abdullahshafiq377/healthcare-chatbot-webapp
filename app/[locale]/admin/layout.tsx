@@ -22,7 +22,6 @@ export default function AdminLayout({
       ) {
         router.replace("/");
       }
-      console.log("Session", session);
     } catch (e) {
       console.log(e);
     }

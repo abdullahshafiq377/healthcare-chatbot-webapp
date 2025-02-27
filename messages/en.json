@@ -28,6 +28,10 @@
     "fields": {
       "firstName": "First name",
       "lastName": "Last name",
+      "phone": "Phone",
+      "birthYear": "Birth year",
+      "country": "Country",
+      "state": "State",
       "email": "Email",
       "password": "Password",
       "alreadyAccount": "Already have an account?"
@@ -48,7 +52,7 @@
       "ACTIONS": "ACTIONS"
     },
     "tooltip": {
-      "details": "Details",
+      "chatHistory": "Chat history",
       "resetPassword": "Reset password",
       "delete": "Delete user"
     }
@@ -100,6 +104,14 @@
     "cancel": "Cancel",
     "confirm": "Report"
   },
+  "ShareWithFriendModal": {
+    "modalTitle": "Share with a friend",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "cancel": "Cancel",
+    "confirm": "Send"
+  },
   "ForgetPasswordModal": {
     "modalTitle": "Reset password",
     "email": "Email",
@@ -128,6 +140,12 @@
   },
   "PrivacyPolicyModal": {
     "title": "Privacy Policy",
+    "reject": "Reject",
+    "accept": "Accept"
+  },
+  "LegalNoticeModal": {
+    "title": "Legal Notice",
+    "showAgain": "Don't show this again",
     "reject": "Reject",
     "accept": "Accept"
   },

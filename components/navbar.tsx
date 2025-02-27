@@ -27,8 +27,6 @@ export const Navbar = () => {
   const pathname = usePathname();
   const { user } = useContext(UserContext);
 
-  console.log(pathname);
-
   const t = useTranslations("Navigation");
 
   const [navItems, setNavItems] = useState<
@@ -39,7 +37,6 @@ export const Navbar = () => {
   >([]);
 
   useEffect(() => {
-    console.log(user?.role === "admin");
     if (user?.role === "admin") {
       setNavItems(siteConfig?.adminItems);
 

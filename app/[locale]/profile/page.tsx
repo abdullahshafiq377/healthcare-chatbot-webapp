@@ -172,7 +172,6 @@ const ProfilePage = () => {
       const res = await axiosInstance.get("/auth/profile");
       const reportsResponse = await axiosInstance.get("/reports/user");
 
-      console.log(reportsResponse.data);
       setReports(reportsResponse.data);
       setUserInfo({
         id: res?.data?.user?._id,
@@ -195,17 +194,17 @@ const ProfilePage = () => {
   const handleUpdateProfile = async () => {
     try {
       setIsUserInfoLoading(true);
-      const res = await axiosInstance.put("/users/update", {
+      await axiosInstance.put("/users/update", {
         firstName: userInfo?.firstName,
         lastName: userInfo?.lastName,
       });
 
-      console.log(res);
       setIsUserInfoLoading(false);
       setAlertMessage("Profile updated successfully!");
       setIsSuccess(true);
       scrollToTop();
       await fetchData();
+
       setTimeout(() => {
         setIsSuccess(false);
         setAlertMessage("");
@@ -227,12 +226,11 @@ const ProfilePage = () => {
   const handleUpdatePassword = async () => {
     try {
       setIsPasswordLoading(true);
-      const res = await axiosInstance.put("/users/password", {
+      await axiosInstance.put("/users/password", {
         oldPassword: passwords.oldPassword,
         newPassword: passwords.newPassword,
       });
 
-      console.log(res);
       setAlertMessage("Password updated successfully!");
       setIsSuccess(true);
       scrollToTop();
@@ -262,7 +260,7 @@ const ProfilePage = () => {
   const handleDeleteAccount = async () => {
     try {
       setIsDeleteLoading(true);
-      const res = await axiosInstance.delete("users/delete");
+      await axiosInstance.delete("users/delete");
 
       logout();
       setIsDeleteLoading(false);
@@ -340,12 +338,13 @@ const ProfilePage = () => {
             </div>
           </CardBody>
           <CardFooter className="flex justify-end gap-4">
-            <Button color="default" variant="ghost">
+            <Button color="default" radius="full" variant="ghost">
               {t("cancel")}
             </Button>
             <Button
               className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
               isLoading={isUserInfoLoading}
+              radius="full"
               variant="solid"
               onPress={handleUpdateProfile}
             >
@@ -477,12 +476,13 @@ const ProfilePage = () => {
             </div>
           </CardBody>
           <CardFooter className="flex justify-end gap-4">
-            <Button color="default" variant="ghost">
+            <Button color="default" radius="full" variant="ghost">
               {t("cancel")}
             </Button>
             <Button
               className="text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
               isLoading={isPasswordLoading}
+              radius="full"
               variant="solid"
               onPress={handleUpdatePassword}
             >
@@ -547,6 +547,7 @@ const ProfilePage = () => {
               <Button
                 color="danger"
                 isDisabled={userInfo?.role === "admin"}
+                radius="full"
                 variant="solid"
                 onPress={onOpen}
               >

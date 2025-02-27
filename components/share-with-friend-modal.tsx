@@ -14,7 +14,7 @@ import { Alert } from "@heroui/alert";
 
 import { axiosInstance } from "@/utils/axiosInstance";
 
-export default function ForgetPasswordModal({
+export default function ShareModal({
   isOpen,
   onOpenChange,
   onClose,
@@ -23,43 +23,28 @@ export default function ForgetPasswordModal({
   onOpenChange: () => void;
   onClose: () => void;
 }) {
-  const t = useTranslations("ForgetPasswordModal");
-  const [email, setEmail] = useState("");
+  const t = useTranslations("ShareWithFriendModal");
+  const [friendInfo, setFriendInfo] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [errors, setErrors] = useState("");
-
-  const getEmailError = (value: string): string | null => {
-    if (!value) {
-      return "Email is required";
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(value)) {
-      return "Please enter a valid email address";
-    }
-    if (value.length > 254) {
-      return "Email must be 254 characters or less";
-    }
-
-    return null;
-  };
 
   const handleSubmit = async () => {
     try {
-      const emailError = getEmailError(email);
-
-      if (emailError) {
-        setErrors(emailError);
-
-        return;
-      }
-
       setIsLoading(true);
-      await axiosInstance.put("/users/forget-password", { email });
+      const res = await axiosInstance.post("/users/invite-friend", friendInfo);
 
+      if (res.status === 201) {
+      }
       setShowSuccessMessage(true);
-      setEmail("");
+      setFriendInfo({
+        firstName: "",
+        lastName: "",
+        email: "",
+      });
       setIsLoading(false);
       setTimeout(() => {
         setShowSuccessMessage(false);
@@ -86,26 +71,49 @@ export default function ForgetPasswordModal({
             </ModalHeader>
             <ModalBody>
               {showSuccessMessage && (
-                <Alert
-                  color="success"
-                  description="An email has been sent to your registered email address."
-                  title="Password reset successfull."
-                />
+                <Alert color="success" title="Invitation sent successfully" />
               )}
               <Input
                 isRequired
-                classNames={{
-                  errorMessage: "text-left",
+                label={t("firstName")}
+                labelPlacement="outside"
+                name="firstName"
+                placeholder="Jhon"
+                value={friendInfo.firstName}
+                onChange={(e) => {
+                  setFriendInfo((prevState) => ({
+                    ...prevState,
+                    firstName: e.target.value,
+                  }));
                 }}
-                errorMessage={errors}
-                isInvalid={Boolean(errors)}
+              />
+              <Input
+                isRequired
+                label={t("lastName")}
+                labelPlacement="outside"
+                name="lastName"
+                placeholder="Doe"
+                value={friendInfo.lastName}
+                onChange={(e) => {
+                  setFriendInfo((prevState) => ({
+                    ...prevState,
+                    lastName: e.target.value,
+                  }));
+                }}
+              />
+              <Input
+                isRequired
                 label={t("email")}
                 labelPlacement="outside"
                 name="email"
-                placeholder="Enter your email."
-                value={email}
+                placeholder="jhon.doe@example.com"
+                type="email"
+                value={friendInfo.email}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setFriendInfo((prevState) => ({
+                    ...prevState,
+                    email: e.target.value,
+                  }));
                 }}
               />
             </ModalBody>

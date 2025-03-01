@@ -6,9 +6,9 @@
     "admin": "Administrador"
   },
   "HomePage": {
-    "title": "Vacuna *highlight* a tu manera.",
+    "title": "Vacuna *resalta* a tu manera.",
     "highlight": "Conocimiento.",
-    "subtitle": "Impulsado por IA, rápido, confiable y amigable con el paciente.",
+    "subtitle": "Impulsado por IA, rápido, confiable y amigable para el paciente.",
     "button": "¡Regístrate ahora!"
   },
   "SignInPage": {
@@ -24,13 +24,19 @@
   },
   "SignUpPage": {
     "title": "¡Únete hoy!",
-    "subtitle": "Crea tu cuenta para comenzar tu viaje de atención médica.",
+    "subtitle": "Crea tu cuenta para comenzar tu viaje de salud.",
     "fields": {
       "firstName": "Nombre",
       "lastName": "Apellido",
+      "phone": "Teléfono",
+      "birthYear": "Año de nacimiento",
+      "country": "País",
+      "state": "Estado",
       "email": "Correo electrónico",
       "password": "Contraseña",
-      "alreadyAccount": "¿Ya tienes una cuenta?"
+      "alreadyAccount": "¿Ya tienes una cuenta?",
+      "privacyPolicyText": "Al hacer clic en registrarse, aceptas nuestra",
+      "privacyPolicyLink": "Política de privacidad"
     },
     "button": "Registrarse"
   },
@@ -40,7 +46,7 @@
   },
   "AdminUsersPage": {
     "title": "Usuarios",
-    "subtitle": "Gestiona los usuarios y sus datos.",
+    "subtitle": "Gestiona usuarios y sus datos.",
     "table": {
       "NAME": "NOMBRE",
       "STATUS": "ESTADO",
@@ -48,7 +54,7 @@
       "ACTIONS": "ACCIONES"
     },
     "tooltip": {
-      "details": "Detalles",
+      "chatHistory": "Historial de chat",
       "resetPassword": "Restablecer contraseña",
       "delete": "Eliminar usuario"
     }
@@ -100,6 +106,14 @@
     "cancel": "Cancelar",
     "confirm": "Reportar"
   },
+  "ShareWithFriendModal": {
+    "modalTitle": "Compartir con un amigo",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo electrónico",
+    "cancel": "Cancelar",
+    "confirm": "Enviar"
+  },
   "ForgetPasswordModal": {
     "modalTitle": "Restablecer contraseña",
     "email": "Correo electrónico",
@@ -118,16 +132,22 @@
     "currentPassword": "Contraseña actual",
     "newPassword": "Nueva contraseña",
     "confirmPassword": "Confirmar contraseña",
-    "privacyDescription": "Controla tu configuración de privacidad.",
+    "privacyDescription": "Controla la configuración de privacidad.",
     "updatePassword": "Actualizar contraseña",
     "myReportsTitle": "Mis reportes",
     "myReportsDescription": "Problemas reportados por ti junto con su estado actual.",
     "deleteAccountTitle": "Eliminar cuenta",
-    "deleteAccountDescription": "Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán eliminados permanentemente.",
+    "deleteAccountDescription": "Una vez eliminada tu cuenta, todos sus recursos y datos serán eliminados permanentemente.",
     "deleteAccount": "Eliminar cuenta"
   },
   "PrivacyPolicyModal": {
     "title": "Política de privacidad",
+    "reject": "Rechazar",
+    "accept": "Aceptar"
+  },
+  "LegalNoticeModal": {
+    "title": "Aviso legal",
+    "showAgain": "No mostrar esto de nuevo",
     "reject": "Rechazar",
     "accept": "Aceptar"
   },
@@ -139,13 +159,13 @@
   },
   "DeleteAccountConfirmationModal": {
     "title": "Eliminar cuenta",
-    "message": "¿Estás seguro de que deseas eliminar tu cuenta y todos los datos relacionados? Una vez eliminada, todos sus recursos y datos serán eliminados permanentemente.",
+    "message": "¿Estás seguro de que deseas eliminar tu cuenta y todos los datos relacionados? Una vez eliminada tu cuenta, todos sus recursos y datos serán eliminados permanentemente.",
     "cancel": "Cancelar",
     "confirm": "Eliminar cuenta"
   },
   "DeleteUserConfirmationModal": {
     "title": "Eliminar usuario",
-    "message": "¿Estás seguro de que deseas eliminar la cuenta de este usuario y todos los datos relacionados? Una vez eliminada, todos sus recursos y datos serán eliminados permanentemente.",
+    "message": "¿Estás seguro de que deseas eliminar la cuenta de este usuario y todos los datos relacionados? Una vez eliminada la cuenta, todos sus recursos y datos serán eliminados permanentemente.",
     "cancel": "Cancelar",
     "confirm": "Eliminar usuario"
   }

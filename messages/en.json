@@ -34,7 +34,9 @@
       "state": "State",
       "email": "Email",
       "password": "Password",
-      "alreadyAccount": "Already have an account?"
+      "alreadyAccount": "Already have an account?",
+      "privacyPolicyText": "By clicking sign up, you agree to our",
+      "privacyPolicyLink": "Privacy Policy"
     },
     "button": "Sign up"
   },

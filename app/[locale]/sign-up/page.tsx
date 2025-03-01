@@ -42,6 +42,7 @@ export default function SignupPage() {
     birthYear: "",
     country: "",
     state: "",
+    privacyPolicyAcceptedAt: ""
   });
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = React.useState(false);
@@ -50,7 +51,7 @@ export default function SignupPage() {
   const [responseMessage, setResponseMessage] = useState<ResponseMessageType>({
     type: "success",
     message: "",
-    description: "",
+    description: ""
   });
 
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -178,13 +179,15 @@ export default function SignupPage() {
 
     // Clear errors and submit
     setErrors({});
-    onOpen();
+    handleSubmit();
+    // onOpen();
   };
 
   const handleSubmit = async () => {
     setIsLoading(true);
     onClose();
     try {
+      credentials.privacyPolicyAcceptedAt = new Date().toISOString();
       await axiosInstance.post("/auth/register", credentials);
 
       setIsLoading(false);
@@ -192,9 +195,20 @@ export default function SignupPage() {
         type: "success",
         message: "Successfully registered!",
         description:
-          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided.",
+          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided."
       });
       setDisplayMessage(true);
+      setCredentials({
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        phone: "",
+        birthYear: "",
+        country: "",
+        state: "",
+        privacyPolicyAcceptedAt: ""
+      });
       setTimeout(() => {
         setDisplayMessage(false);
         router.push("/sign-in");
@@ -207,13 +221,15 @@ export default function SignupPage() {
 
   return (
     <div>
-      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
+      <div
+        className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
         <Card
           isBlurred
           className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="px-5 pt-6">
-            <div className="flex flex-col gap-4 w-full text-center justify-center">
+            <div
+              className="flex flex-col gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
               <h2 className="text-md">{t("subtitle")}</h2>
               {displayMessage && (
@@ -236,7 +252,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.firstName}
                     isInvalid={Boolean(errors?.firstName)}
@@ -251,7 +267,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        firstName: value,
+                        firstName: value
                       }))
                     }
                   />
@@ -260,7 +276,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.lastName}
                     isInvalid={Boolean(errors?.lastName)}
@@ -275,7 +291,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        lastName: value,
+                        lastName: value
                       }))
                     }
                   />
@@ -285,7 +301,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.phone}
                     isInvalid={Boolean(errors?.phone)}
@@ -300,7 +316,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        phone: value,
+                        phone: value
                       }))
                     }
                   />
@@ -309,7 +325,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.birthYear}
                     isInvalid={Boolean(errors?.birthYear)}
@@ -324,7 +340,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        birthYear: value,
+                        birthYear: value
                       }))
                     }
                   />
@@ -334,7 +350,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.country}
                     isInvalid={Boolean(errors?.country)}
@@ -349,7 +365,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        country: value,
+                        country: value
                       }))
                     }
                   />
@@ -357,7 +373,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.state}
                     isInvalid={Boolean(errors?.state)}
@@ -372,7 +388,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        state: value,
+                        state: value
                       }))
                     }
                   />
@@ -382,7 +398,7 @@ export default function SignupPage() {
                   isRequired
                   classNames={{
                     inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left",
+                    errorMessage: "text-left"
                   }}
                   errorMessage={errors.email}
                   isInvalid={Boolean(errors?.email)}
@@ -397,7 +413,7 @@ export default function SignupPage() {
                   onValueChange={(value) =>
                     setCredentials((prevState) => ({
                       ...prevState,
-                      email: value,
+                      email: value
                     }))
                   }
                 />
@@ -406,7 +422,7 @@ export default function SignupPage() {
                   isRequired
                   classNames={{
                     inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left",
+                    errorMessage: "text-left"
                   }}
                   endContent={
                     <button
@@ -443,7 +459,7 @@ export default function SignupPage() {
                   onValueChange={(value) =>
                     setCredentials((prevState) => ({
                       ...prevState,
-                      password: value,
+                      password: value
                     }))
                   }
                 />
@@ -461,6 +477,15 @@ export default function SignupPage() {
                   {t("fields.alreadyAccount")}
                 </Link>
               </div>
+
+              <p className="text-sm text-gray-400 dark:text-gray-500">
+                {t("fields.privacyPolicyText")}
+                {' '}
+                <Link
+                  href="https://vaccinesupport.co/privacy-and-disclaimers"
+                  target="_blank"
+                  className="underline text-lime-500 hover:text-lime-600">{t("fields.privacyPolicyLink")}</Link>.
+              </p>
 
               <div className="flex gap-4">
                 <Button

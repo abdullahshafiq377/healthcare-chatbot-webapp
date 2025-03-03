@@ -3,7 +3,7 @@
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import clsx from "clsx";
@@ -17,6 +17,11 @@ import { title } from "@/components/primitives";
 import { Link, useRouter } from "@/i18n/routing";
 import PrivacyPolicyModal from "@/components/privacy-policy-modal";
 import { axiosInstance } from "@/utils/axiosInstance";
+
+interface CountryType {
+  id: number;
+  name: string;
+}
 
 interface Errors {
   [key: string]: string | undefined;
@@ -51,25 +56,65 @@ export default function SignupPage() {
     birthYear: "",
     country: "",
     state: "",
-    privacyPolicyAcceptedAt: "",
+    privacyPolicyAcceptedAt: ""
   });
   const [errors, setErrors] = useState<Errors>({});
   const [isVisible, setIsVisible] = useState({
     password: false,
-    confirmPassword: false,
+    confirmPassword: false
   });
   const [isLoading, setIsLoading] = useState(false);
   const [displayMessage, setDisplayMessage] = useState(false);
   const [responseMessage, setResponseMessage] = useState<ResponseMessageType>({
     type: "success",
     message: "",
-    description: "",
+    description: ""
   });
+  const [countries, setCountries] = useState<CountryType[]>([]);
+  const [states, setStates] = useState<CountryType[]>([]);
+  const [countriesLoading, setCountriesLoading] = useState(false);
+  const [statesLoading, setStatesLoading] = useState(false);
+
+  const fetchCountries = async () => {
+    try {
+      setCountriesLoading(true);
+      const res = await axiosInstance.get("/countries");
+      console.log(res.data);
+      setCountries(res.data);
+      setCountriesLoading(false);
+    } catch (e) {
+      console.log(e);
+      setCountriesLoading(false);
+      setCountries([]);
+    }
+  };
+
+  const fetchStates = async () => {
+    try {
+      setStatesLoading(true);
+      const res = await axiosInstance.get(`/states/${credentials.country}`);
+      console.log(res.data);
+      setStates(res.data);
+      setStatesLoading(false);
+    } catch (e) {
+      console.log(e);
+      setStatesLoading(false);
+      setStates([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+
+  useEffect(() => {
+    fetchStates();
+  }, [credentials.country]);
 
   const toggleVisibility = (field: keyof typeof isVisible) =>
     setIsVisible((prevState) => ({
       ...prevState,
-      [field]: !prevState[field],
+      [field]: !prevState[field]
     }));
 
   // Real-time password validation
@@ -219,7 +264,7 @@ export default function SignupPage() {
         type: "success",
         message: "Successfully registered!",
         description:
-          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided.",
+          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided."
       });
       setDisplayMessage(true);
       setCredentials({
@@ -232,7 +277,7 @@ export default function SignupPage() {
         birthYear: "",
         country: "",
         state: "",
-        privacyPolicyAcceptedAt: "",
+        privacyPolicyAcceptedAt: ""
       });
       setTimeout(() => {
         setDisplayMessage(false);
@@ -246,13 +291,15 @@ export default function SignupPage() {
 
   return (
     <div>
-      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
+      <div
+        className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
         <Card
           isBlurred
           className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="px-5 pt-6">
-            <div className="flex flex-col gap-4 w-full text-center justify-center">
+            <div
+              className="flex flex-col gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
               <h2 className="text-md">{t("subtitle")}</h2>
               {displayMessage && (
@@ -275,7 +322,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.firstName}
                     isInvalid={Boolean(errors?.firstName)}
@@ -290,7 +337,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        firstName: value,
+                        firstName: value
                       }))
                     }
                   />
@@ -299,7 +346,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.lastName}
                     isInvalid={Boolean(errors?.lastName)}
@@ -314,7 +361,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        lastName: value,
+                        lastName: value
                       }))
                     }
                   />
@@ -323,7 +370,7 @@ export default function SignupPage() {
                   <Input
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     errorMessage={errors.phone}
                     isInvalid={Boolean(errors?.phone)}
@@ -338,7 +385,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        phone: value,
+                        phone: value
                       }))
                     }
                   />
@@ -357,7 +404,7 @@ export default function SignupPage() {
                     onSelectionChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        birthYear: value ? (value as string) : "",
+                        birthYear: value ? (value as string) : ""
                       }))
                     }
                   >
@@ -392,59 +439,111 @@ export default function SignupPage() {
                   {/*/>*/}
                 </div>
                 <div className="flex gap-4 w-full">
-                  <Input
-                    isRequired
-                    classNames={{
-                      inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
-                    }}
+                  <Autocomplete
+                    isDisabled={countriesLoading}
+                    className="max-w-xs"
+                    defaultItems={countries}
                     errorMessage={errors.country}
                     isInvalid={Boolean(errors?.country)}
                     label={t("fields.country")}
                     labelPlacement="outside"
                     name="country"
-                    placeholder="USA"
+                    placeholder="Select your country"
                     radius="sm"
-                    type="text"
                     value={credentials.country}
                     variant="bordered"
-                    onValueChange={(value) =>
+                    onSelectionChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        country: value,
+                        country: value ? (value as string) : ""
                       }))
                     }
-                  />
-                  <Input
-                    isRequired
-                    classNames={{
-                      inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
-                    }}
+                  >
+                    {(country) => (
+                      <AutocompleteItem key={country.id}>
+                        {country.name}
+                      </AutocompleteItem>
+                    )}
+                  </Autocomplete>
+                  {/*<Input*/}
+                  {/*  isRequired*/}
+                  {/*  classNames={{*/}
+                  {/*    inputWrapper: "bg-white dark:bg-gray-950",*/}
+                  {/*    errorMessage: "text-left"*/}
+                  {/*  }}*/}
+                  {/*  errorMessage={errors.country}*/}
+                  {/*  isInvalid={Boolean(errors?.country)}*/}
+                  {/*  label={t("fields.country")}*/}
+                  {/*  labelPlacement="outside"*/}
+                  {/*  name="country"*/}
+                  {/*  placeholder="USA"*/}
+                  {/*  radius="sm"*/}
+                  {/*  type="text"*/}
+                  {/*  value={credentials.country}*/}
+                  {/*  variant="bordered"*/}
+                  {/*  onValueChange={(value) =>*/}
+                  {/*    setCredentials((prevState) => ({*/}
+                  {/*      ...prevState,*/}
+                  {/*      country: value*/}
+                  {/*    }))*/}
+                  {/*  }*/}
+                  {/*/>*/}
+                  <Autocomplete
+                    isDisabled={statesLoading || !Boolean(credentials.country)}
+                    className="max-w-xs"
+                    defaultItems={states}
                     errorMessage={errors.state}
                     isInvalid={Boolean(errors?.state)}
                     label={t("fields.state")}
                     labelPlacement="outside"
                     name="state"
-                    placeholder="Chicago"
+                    placeholder="Select your state"
                     radius="sm"
-                    type="text"
                     value={credentials.state}
                     variant="bordered"
-                    onValueChange={(value) =>
+                    onSelectionChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        state: value,
+                        state: value ? (value as string) : ""
                       }))
                     }
-                  />
+                  >
+                    {(state) => (
+                      <AutocompleteItem key={state.id}>
+                        {state.name}
+                      </AutocompleteItem>
+                    )}
+                  </Autocomplete>
+                  {/*<Input*/}
+                  {/*  isRequired*/}
+                  {/*  classNames={{*/}
+                  {/*    inputWrapper: "bg-white dark:bg-gray-950",*/}
+                  {/*    errorMessage: "text-left"*/}
+                  {/*  }}*/}
+                  {/*  errorMessage={errors.state}*/}
+                  {/*  isInvalid={Boolean(errors?.state)}*/}
+                  {/*  label={t("fields.state")}*/}
+                  {/*  labelPlacement="outside"*/}
+                  {/*  name="state"*/}
+                  {/*  placeholder="Chicago"*/}
+                  {/*  radius="sm"*/}
+                  {/*  type="text"*/}
+                  {/*  value={credentials.state}*/}
+                  {/*  variant="bordered"*/}
+                  {/*  onValueChange={(value) =>*/}
+                  {/*    setCredentials((prevState) => ({*/}
+                  {/*      ...prevState,*/}
+                  {/*      state: value*/}
+                  {/*    }))*/}
+                  {/*  }*/}
+                  {/*/>*/}
                 </div>
 
                 <Input
                   isRequired
                   classNames={{
                     inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left",
+                    errorMessage: "text-left"
                   }}
                   errorMessage={errors.email}
                   isInvalid={Boolean(errors?.email)}
@@ -459,7 +558,7 @@ export default function SignupPage() {
                   onValueChange={(value) =>
                     setCredentials((prevState) => ({
                       ...prevState,
-                      email: value,
+                      email: value
                     }))
                   }
                 />
@@ -468,7 +567,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     endContent={
                       <button
@@ -505,7 +604,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        password: value,
+                        password: value
                       }))
                     }
                   />
@@ -513,7 +612,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left",
+                      errorMessage: "text-left"
                     }}
                     endContent={
                       <button
@@ -550,7 +649,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        confirmPassword: value,
+                        confirmPassword: value
                       }))
                     }
                   />

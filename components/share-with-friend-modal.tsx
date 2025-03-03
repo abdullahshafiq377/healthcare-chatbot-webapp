@@ -78,7 +78,7 @@ export default function ShareModal({
                 label={t("firstName")}
                 labelPlacement="outside"
                 name="firstName"
-                placeholder="Jhon"
+                placeholder="John"
                 value={friendInfo.firstName}
                 onChange={(e) => {
                   setFriendInfo((prevState) => ({
@@ -106,7 +106,7 @@ export default function ShareModal({
                 label={t("email")}
                 labelPlacement="outside"
                 name="email"
-                placeholder="jhon.doe@example.com"
+                placeholder="john.doe@example.com"
                 type="email"
                 value={friendInfo.email}
                 onChange={(e) => {

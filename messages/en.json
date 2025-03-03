@@ -34,6 +34,7 @@
       "state": "State",
       "email": "Email",
       "password": "Password",
+      "confirmPassword": "Confirm password",
       "alreadyAccount": "Already have an account?",
       "privacyPolicyText": "By clicking sign up, you agree to our",
       "privacyPolicyLink": "Privacy Policy"
@@ -77,7 +78,24 @@
   "ChatsPage": {
     "chatHistory": "Chat history",
     "conversation": "Conversation",
-    "noConversation": "No conversations found."
+    "noConversation": "No conversations found.",
+    "startNewConversation": "Start a new conversation",
+    "initialMessage": "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+    "refer": {
+      "title": "Refer a Friend",
+      "description": "Know someone who could benefit from VaxSupport? Spread the word and share it with them!",
+      "button": "Share now!"
+    },
+    "feedback": {
+      "title": "Submit feedback",
+      "description": "Was there a response that wasn’t helpful or transparent enough? Tell us about it!",
+      "button": "Submit feedback"
+    },
+    "enhancements": {
+      "title": "Enhancements",
+      "description": "Is there a feature you’d like to see built to support vaccine decisions?",
+      "button": "Request enhancements"
+    }
   },
   "ProfileDropdown": {
     "signedInAs": "Signed in as",
@@ -148,6 +166,7 @@
   "LegalNoticeModal": {
     "title": "Legal Notice",
     "showAgain": "Don't show this again",
+    "notice": "This platform is not a substitute for patient-provider decision making. By clicking Accept, you understand that responses are intended to be informative, are AI-based, and should get more precise over time.",
     "reject": "Reject",
     "accept": "Accept"
   },

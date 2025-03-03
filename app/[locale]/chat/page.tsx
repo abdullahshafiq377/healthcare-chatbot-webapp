@@ -61,7 +61,7 @@ export default function ChatPage() {
       _id: "initial_message",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      text: "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+      text: t("initialMessage"),
       conversationId: "",
       sender: "bot",
     },
@@ -147,7 +147,7 @@ export default function ChatPage() {
               _id: "initial_message",
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
-              text: "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+              text: t("initialMessage"),
               conversationId: "",
               sender: "bot",
             },
@@ -215,7 +215,7 @@ export default function ChatPage() {
         _id: "initial_message",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        text: "Hi, I’m Aiden, answering all your vaccine questions! How can we help? If you don’t think the response is accurate or up to standards, let us know!",
+        text: t("initialMessage"),
         conversationId: "",
         sender: "bot",
       },
@@ -267,7 +267,7 @@ export default function ChatPage() {
               <CardBody>
                 <div className="text-sm font-medium flex gap-2">
                   <PlusIcon height={20} width={20} />
-                  Start New Conversation
+                  {t("startNewConversation")}
                 </div>
               </CardBody>
             </Card>
@@ -344,7 +344,7 @@ export default function ChatPage() {
               <CardBody>
                 <span className="text-sm font-medium flex gap-2">
                   <PlusIcon height={20} width={20} />
-                  Start New Conversation
+                  {t("startNewConversation")}
                 </span>
               </CardBody>
             </Card>
@@ -455,15 +455,14 @@ export default function ChatPage() {
           <CardHeader>
             <div className="flex items-center justify-center gap-2">
               <ShareIcon height={20} width={20} />
-              <span className="text-lg font-semibold">Refer a Friend</span>
+              <span className="text-lg font-semibold">{t("refer.title")}</span>
             </div>
           </CardHeader>
           <Divider />
           <CardBody>
             <div className="flex flex-col gap-2 justify-between h-full">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Know someone who could benefit from VaxSupport? Spread the word
-                and share it with them!
+                {t("refer.description")}
               </p>
               {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
               {/*  <img className="h-16" src={shareImage.src} alt="share" />*/}
@@ -473,7 +472,7 @@ export default function ChatPage() {
                 radius="full"
                 onPress={onShareOpen}
               >
-                Share now!
+                {t("refer.button")}
               </Button>
             </div>
           </CardBody>
@@ -483,15 +482,16 @@ export default function ChatPage() {
           <CardHeader>
             <div className="flex gap-2 justify-center items-center">
               <EnvelopeIcon height={20} width={20} />
-              <span className={"text-lg font-medium"}>Submit feedback</span>
+              <span className={"text-lg font-medium"}>
+                {t("feedback.title")}
+              </span>
             </div>
           </CardHeader>
           <Divider />
           <CardBody>
             <div className="flex flex-col gap-2 justify-between h-full">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Was there a response that wasn’t helpful or transparent enough?
-                Tell us about it!
+                {t("feedback.description")}
               </p>
               {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
               {/*  <img className="h-16" src={shareImage.src} alt="share" />*/}
@@ -506,7 +506,7 @@ export default function ChatPage() {
                 )}
                 href="mailto:info@vaccifi.co?subject=Response%20Feedback"
               >
-                Submit feedback
+                {t("feedback.button")}
               </Link>
             </div>
           </CardBody>
@@ -515,15 +515,16 @@ export default function ChatPage() {
           <CardHeader>
             <div className="flex gap-2 justify-center items-center">
               <SparklesIcon height={20} width={20} />
-              <span className={"text-lg font-medium"}>Enhancements</span>
+              <span className={"text-lg font-medium"}>
+                {t("enhancements.title")}
+              </span>
             </div>
           </CardHeader>
           <Divider />
           <CardBody>
             <div className="flex flex-col gap-2 justify-between h-full">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Is there a feature you’d like to see built to support vaccine
-                decisions?
+                {t("enhancements.description")}
               </p>
               {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
               {/*  <img className="h-16" src={shareImage.src} alt="share" />*/}
@@ -538,7 +539,7 @@ export default function ChatPage() {
                 )}
                 href="mailto:info@vaccifi.co?subject=Site%20Enhancments"
               >
-                Request enhancements
+                {t("enhancements.button")}
               </Link>
             </div>
           </CardBody>

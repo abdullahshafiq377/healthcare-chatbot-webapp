@@ -57,7 +57,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       axiosInstance.post("/auth/logout").then((res) => {
         setUser(null); // Clear user data
-        window.location.href = "/en";
+        window.location.href = "/";
       });
     } catch (e) {
       console.log(e);

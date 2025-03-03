@@ -11,6 +11,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 import { useDisclosure } from "@heroui/modal";
 import { Alert } from "@heroui/alert";
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 
 import { title } from "@/components/primitives";
 import { Link, useRouter } from "@/i18n/routing";
@@ -27,6 +28,13 @@ interface ResponseMessageType {
   type: "success" | "danger";
 }
 
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: currentYear - 1899 }, (_, i) => {
+  const year = currentYear - i;
+
+  return { label: year.toString(), value: year.toString() };
+});
+
 export default function SignupPage() {
   const t = useTranslations("SignUpPage");
   const router = useRouter();
@@ -36,25 +44,33 @@ export default function SignupPage() {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     firstName: "",
     lastName: "",
     phone: "",
     birthYear: "",
     country: "",
     state: "",
-    privacyPolicyAcceptedAt: ""
+    privacyPolicyAcceptedAt: "",
   });
   const [errors, setErrors] = useState<Errors>({});
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [displayMessage, setDisplayMessage] = useState(false);
   const [responseMessage, setResponseMessage] = useState<ResponseMessageType>({
     type: "success",
     message: "",
-    description: ""
+    description: "",
   });
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const toggleVisibility = (field: keyof typeof isVisible) =>
+    setIsVisible((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
 
   // Real-time password validation
   const getPasswordError = (value: string): string | null => {
@@ -91,10 +107,11 @@ export default function SignupPage() {
     if (!value) {
       return "Phone number is required";
     }
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/; // E.164 format
+    // USA phone number format: +1XXXXXXXXXX or 1XXXXXXXXXX
+    const phoneRegex = /^(\+1|1)?\d{10}$/;
 
     if (!phoneRegex.test(value)) {
-      return "Please enter a valid phone number";
+      return "Please enter a valid US phone number";
     }
 
     return null;
@@ -144,7 +161,11 @@ export default function SignupPage() {
     const passwordError = getPasswordError(credentials.password);
     const emailError = getEmailError(credentials.email);
     const birthYear = getBirthYearError(credentials.birthYear);
-    const phoneError = getPhoneError(credentials.phone);
+    let phoneError = null;
+
+    if (credentials.phone.length > 0) {
+      phoneError = getPhoneError(credentials.phone);
+    }
     const countryError = getCountryError(credentials.country);
     const stateError = getStateError(credentials.state);
 
@@ -168,6 +189,9 @@ export default function SignupPage() {
     }
     if (credentials.firstName.length === 0) {
       newErrors.firstName = "First name is required";
+    }
+    if (credentials.password !== credentials.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     console.log("Error:", newErrors);
@@ -195,19 +219,20 @@ export default function SignupPage() {
         type: "success",
         message: "Successfully registered!",
         description:
-          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided."
+          "Your account has been created successfully. You will be redirected to the sign in page. Please sign in using the credentials you provided.",
       });
       setDisplayMessage(true);
       setCredentials({
         email: "",
         password: "",
+        confirmPassword: "",
         firstName: "",
         lastName: "",
         phone: "",
         birthYear: "",
         country: "",
         state: "",
-        privacyPolicyAcceptedAt: ""
+        privacyPolicyAcceptedAt: "",
       });
       setTimeout(() => {
         setDisplayMessage(false);
@@ -221,15 +246,13 @@ export default function SignupPage() {
 
   return (
     <div>
-      <div
-        className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
+      <div className="z-20 w-full px-4 sm:px-0 sm:max-w-md flex flex-col gap-4 ">
         <Card
           isBlurred
           className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="px-5 pt-6">
-            <div
-              className="flex flex-col gap-4 w-full text-center justify-center">
+            <div className="flex flex-col gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
               <h2 className="text-md">{t("subtitle")}</h2>
               {displayMessage && (
@@ -252,7 +275,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left"
+                      errorMessage: "text-left",
                     }}
                     errorMessage={errors.firstName}
                     isInvalid={Boolean(errors?.firstName)}
@@ -267,7 +290,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        firstName: value
+                        firstName: value,
                       }))
                     }
                   />
@@ -276,7 +299,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left"
+                      errorMessage: "text-left",
                     }}
                     errorMessage={errors.lastName}
                     isInvalid={Boolean(errors?.lastName)}
@@ -291,24 +314,23 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        lastName: value
+                        lastName: value,
                       }))
                     }
                   />
                 </div>
                 <div className="flex gap-4 w-full">
                   <Input
-                    isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left"
+                      errorMessage: "text-left",
                     }}
                     errorMessage={errors.phone}
                     isInvalid={Boolean(errors?.phone)}
                     label={t("fields.phone")}
                     labelPlacement="outside"
                     name="phone"
-                    placeholder="+1 234 567 890"
+                    placeholder="+1XXXXXXXXXX"
                     radius="sm"
                     type="text"
                     value={credentials.phone}
@@ -316,17 +338,13 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        phone: value
+                        phone: value,
                       }))
                     }
                   />
-
-                  <Input
-                    isRequired
-                    classNames={{
-                      inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left"
-                    }}
+                  <Autocomplete
+                    className="max-w-xs"
+                    defaultItems={years}
                     errorMessage={errors.birthYear}
                     isInvalid={Boolean(errors?.birthYear)}
                     label={t("fields.birthYear")}
@@ -334,23 +352,51 @@ export default function SignupPage() {
                     name="birthYear"
                     placeholder="1990"
                     radius="sm"
-                    type="text"
                     value={credentials.birthYear}
                     variant="bordered"
-                    onValueChange={(value) =>
+                    onSelectionChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        birthYear: value
+                        birthYear: value ? (value as string) : "",
                       }))
                     }
-                  />
+                  >
+                    {(years) => (
+                      <AutocompleteItem key={years.value}>
+                        {years.label}
+                      </AutocompleteItem>
+                    )}
+                  </Autocomplete>
+                  {/*<Input*/}
+                  {/*  isRequired*/}
+                  {/*  classNames={{*/}
+                  {/*    inputWrapper: "bg-white dark:bg-gray-950",*/}
+                  {/*    errorMessage: "text-left"*/}
+                  {/*  }}*/}
+                  {/*  errorMessage={errors.birthYear}*/}
+                  {/*  isInvalid={Boolean(errors?.birthYear)}*/}
+                  {/*  label={t("fields.birthYear")}*/}
+                  {/*  labelPlacement="outside"*/}
+                  {/*  name="birthYear"*/}
+                  {/*  placeholder="1990"*/}
+                  {/*  radius="sm"*/}
+                  {/*  type="text"*/}
+                  {/*  value={credentials.birthYear}*/}
+                  {/*  variant="bordered"*/}
+                  {/*  onValueChange={(value) =>*/}
+                  {/*    setCredentials((prevState) => ({*/}
+                  {/*      ...prevState,*/}
+                  {/*      birthYear: value*/}
+                  {/*    }))*/}
+                  {/*  }*/}
+                  {/*/>*/}
                 </div>
                 <div className="flex gap-4 w-full">
                   <Input
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left"
+                      errorMessage: "text-left",
                     }}
                     errorMessage={errors.country}
                     isInvalid={Boolean(errors?.country)}
@@ -365,7 +411,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        country: value
+                        country: value,
                       }))
                     }
                   />
@@ -373,7 +419,7 @@ export default function SignupPage() {
                     isRequired
                     classNames={{
                       inputWrapper: "bg-white dark:bg-gray-950",
-                      errorMessage: "text-left"
+                      errorMessage: "text-left",
                     }}
                     errorMessage={errors.state}
                     isInvalid={Boolean(errors?.state)}
@@ -388,7 +434,7 @@ export default function SignupPage() {
                     onValueChange={(value) =>
                       setCredentials((prevState) => ({
                         ...prevState,
-                        state: value
+                        state: value,
                       }))
                     }
                   />
@@ -398,7 +444,7 @@ export default function SignupPage() {
                   isRequired
                   classNames={{
                     inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left"
+                    errorMessage: "text-left",
                   }}
                   errorMessage={errors.email}
                   isInvalid={Boolean(errors?.email)}
@@ -413,56 +459,102 @@ export default function SignupPage() {
                   onValueChange={(value) =>
                     setCredentials((prevState) => ({
                       ...prevState,
-                      email: value
+                      email: value,
                     }))
                   }
                 />
-
-                <Input
-                  isRequired
-                  classNames={{
-                    inputWrapper: "bg-white dark:bg-gray-950",
-                    errorMessage: "text-left"
-                  }}
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeSlashIcon
-                          className="text-default-400 pointer-events-none"
-                          height={20}
-                          width={20}
-                        />
-                      ) : (
-                        <EyeIcon
-                          className="text-default-400 pointer-events-none"
-                          height={20}
-                          width={20}
-                        />
-                      )}
-                    </button>
-                  }
-                  errorMessage={errors?.password || undefined}
-                  isInvalid={Boolean(errors?.password)}
-                  label={t("fields.password")}
-                  labelPlacement="outside"
-                  name="password"
-                  placeholder="Enter your password"
-                  radius="sm"
-                  type={isVisible ? "text" : "password"}
-                  value={credentials.password}
-                  variant="bordered"
-                  onValueChange={(value) =>
-                    setCredentials((prevState) => ({
-                      ...prevState,
-                      password: value
-                    }))
-                  }
-                />
+                <div className="flex gap-4 w-full">
+                  <Input
+                    isRequired
+                    classNames={{
+                      inputWrapper: "bg-white dark:bg-gray-950",
+                      errorMessage: "text-left",
+                    }}
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={() => toggleVisibility("password")}
+                      >
+                        {isVisible.password ? (
+                          <EyeSlashIcon
+                            className="text-default-400 pointer-events-none"
+                            height={20}
+                            width={20}
+                          />
+                        ) : (
+                          <EyeIcon
+                            className="text-default-400 pointer-events-none"
+                            height={20}
+                            width={20}
+                          />
+                        )}
+                      </button>
+                    }
+                    errorMessage={errors?.password || undefined}
+                    isInvalid={Boolean(errors?.password)}
+                    label={t("fields.password")}
+                    labelPlacement="outside"
+                    name="password"
+                    placeholder="Enter your password"
+                    radius="sm"
+                    type={isVisible.password ? "text" : "password"}
+                    value={credentials.password}
+                    variant="bordered"
+                    onValueChange={(value) =>
+                      setCredentials((prevState) => ({
+                        ...prevState,
+                        password: value,
+                      }))
+                    }
+                  />
+                  <Input
+                    isRequired
+                    classNames={{
+                      inputWrapper: "bg-white dark:bg-gray-950",
+                      errorMessage: "text-left",
+                    }}
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={() => toggleVisibility("confirmPassword")}
+                      >
+                        {isVisible.confirmPassword ? (
+                          <EyeSlashIcon
+                            className="text-default-400 pointer-events-none"
+                            height={20}
+                            width={20}
+                          />
+                        ) : (
+                          <EyeIcon
+                            className="text-default-400 pointer-events-none"
+                            height={20}
+                            width={20}
+                          />
+                        )}
+                      </button>
+                    }
+                    errorMessage={errors?.confirmPassword || undefined}
+                    isInvalid={Boolean(errors?.confirmPassword)}
+                    label={t("fields.confirmPassword")}
+                    labelPlacement="outside"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    radius="sm"
+                    type={isVisible.confirmPassword ? "text" : "password"}
+                    value={credentials.confirmPassword}
+                    variant="bordered"
+                    onValueChange={(value) =>
+                      setCredentials((prevState) => ({
+                        ...prevState,
+                        confirmPassword: value,
+                      }))
+                    }
+                  />
+                </div>
               </div>
             </Form>
           </CardBody>
@@ -479,12 +571,14 @@ export default function SignupPage() {
               </div>
 
               <p className="text-sm text-gray-400 dark:text-gray-500">
-                {t("fields.privacyPolicyText")}
-                {' '}
+                {t("fields.privacyPolicyText")}{" "}
                 <Link
+                  className="underline text-lime-500 hover:text-lime-600"
                   href="https://vaccinesupport.co/privacy-and-disclaimers"
                   target="_blank"
-                  className="underline text-lime-500 hover:text-lime-600">{t("fields.privacyPolicyLink")}</Link>.
+                >
+                  {t("fields.privacyPolicyLink")}
+                </Link>
               </p>
 
               <div className="flex gap-4">

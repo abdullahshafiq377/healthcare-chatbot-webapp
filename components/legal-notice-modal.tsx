@@ -40,12 +40,7 @@ export default function LegalNoticeModal({
               {t("title")}
             </ModalHeader>
             <ModalBody>
-              <p>
-                This platform is not a substitute for patient-provider decision
-                making. By clicking Accept, you understand that responses are
-                intended to be informative, are AI-based, and should get more
-                precise over time.
-              </p>
+              <p>{t("notice")}</p>
             </ModalBody>
             <ModalFooter className="flex justify-between">
               <Checkbox

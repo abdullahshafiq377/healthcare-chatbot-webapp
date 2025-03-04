@@ -4,18 +4,19 @@ import Lottie from "lottie-react";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import { useTranslations } from "next-intl";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDisclosure } from "@heroui/modal";
 
 import { subtitle, title } from "@/components/primitives";
 import animationData from "@/assets/animations/heartbeat.json";
 import { Link, useRouter } from "@/i18n/routing";
-import { axiosInstance } from "@/utils/axiosInstance";
 import LegalNoticeModal from "@/components/legal-notice-modal";
+import { UserContext } from "@/context/user-context";
 
 export default function Home() {
   const t = useTranslations("HomePage");
 
+  const { user } = useContext(UserContext);
   const [selected, setSelected] = useState(false);
   const [hasAcceptedLegalNotice, setHasAcceptedLegalNotice] = useState<boolean>(
     () => {
@@ -29,26 +30,26 @@ export default function Home() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const router = useRouter();
 
-  const verifySession = async () => {
-    try {
-      const session = await axiosInstance.get("/auth/check-session");
-
-      if (session?.data?.isAuthenticated) {
-        if (session?.data?.user?.role === "admin") {
-          router.replace("/admin/users");
-        }
-        if (session?.data?.user?.role === "user") {
-          router.replace("/chat");
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    verifySession();
-  }, []);
+  // const verifySession = async () => {
+  //   try {
+  //     const session = await axiosInstance.get("/auth/check-session");
+  //
+  //     if (session?.data?.isAuthenticated) {
+  //       if (session?.data?.user?.role === "admin") {
+  //         router.replace("/admin/users");
+  //       }
+  //       if (session?.data?.user?.role === "user") {
+  //         router.replace("/chat");
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+  //
+  // useEffect(() => {
+  //   verifySession();
+  // }, []);
 
   useEffect(() => {
     if (!hasAcceptedLegalNotice) {
@@ -89,20 +90,37 @@ export default function Home() {
         </div>
 
         <div className="flex gap-4 sm:gap-3 flex-wrap justify-center">
-          <Link
-            className={clsx(
-              buttonStyles({
-                radius: "full",
-                variant: "shadow",
-                size: "lg",
-              }),
-              "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
-            )}
-            href="/sign-up"
-          >
-            <SparklesIcon height={16} width={16} />
-            {t("button")}
-          </Link>
+          {!Boolean(user) ? (
+            <Link
+              className={clsx(
+                buttonStyles({
+                  radius: "full",
+                  variant: "shadow",
+                  size: "lg",
+                }),
+                "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+              )}
+              href="/sign-up"
+            >
+              <SparklesIcon height={16} width={16} />
+              {t("button")}
+            </Link>
+          ) : (
+            <Link
+              className={clsx(
+                buttonStyles({
+                  radius: "full",
+                  variant: "shadow",
+                  size: "lg",
+                }),
+                "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+              )}
+              href="/chat"
+            >
+              <SparklesIcon height={16} width={16} />
+              {t("button2")}
+            </Link>
+          )}
         </div>
 
         <LegalNoticeModal

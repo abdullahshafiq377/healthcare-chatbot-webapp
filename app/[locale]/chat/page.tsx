@@ -18,6 +18,7 @@ import { Navbar, NavbarMenu, NavbarMenuToggle } from "@heroui/navbar";
 import { useDisclosure } from "@heroui/modal";
 import clsx from "clsx";
 import { button as buttonStyles } from "@heroui/theme";
+import { Alert } from "@heroui/alert";
 
 import ConversationSection from "@/components/conversation-section";
 import ConversationItem from "@/components/conversation-item";
@@ -70,6 +71,7 @@ export default function ChatPage() {
   const [isMessageSentLoading, setIsMessageSentLoading] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
 
   const sendMessage = async () => {
     try {
@@ -116,6 +118,7 @@ export default function ChatPage() {
       });
 
       if (res?.data) {
+        console.log(res?.data);
         const updatedMessages = [...dummyMessages];
 
         updatedMessages.pop();
@@ -127,8 +130,13 @@ export default function ChatPage() {
           scrollToBottom(chatContainerRef);
         }, 100);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
+      if (e?.response?.data?.message === "Daily message limit reached") {
+        setLimitReached(true);
+      } else {
+        setLimitReached(false);
+      }
       setIsMessageSentLoading(false);
     }
   };
@@ -423,30 +431,41 @@ export default function ChatPage() {
         <Divider />
         <CardFooter>
           <div className="flex gap-4 w-full">
-            <Textarea
-              isClearable
-              maxRows={3}
-              minRows={1}
-              placeholder="Type your message here"
-              value={messageText}
-              variant="bordered"
-              onChange={(e) => setMessageText(e.target.value)}
-              onClear={() => setMessageText("")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault(); // Prevent newline
-                  sendMessage(); // Send message
-                }
-              }}
-            />
-            <Button
-              isIconOnly
-              className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
-              radius="full"
-              onPress={sendMessage}
-            >
-              <PaperAirplaneIcon height={20} width={20} />
-            </Button>
+            {limitReached ? (
+              <Alert
+                className="text-left"
+                color="warning"
+                title="Daily limit reached"
+                variant="faded"
+              />
+            ) : (
+              <>
+                <Textarea
+                  isClearable
+                  maxRows={3}
+                  minRows={1}
+                  placeholder="Type your message here"
+                  value={messageText}
+                  variant="bordered"
+                  onChange={(e) => setMessageText(e.target.value)}
+                  onClear={() => setMessageText("")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault(); // Prevent newline
+                      sendMessage(); // Send message
+                    }
+                  }}
+                />
+                <Button
+                  isIconOnly
+                  className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
+                  radius="full"
+                  onPress={sendMessage}
+                >
+                  <PaperAirplaneIcon height={20} width={20} />
+                </Button>
+              </>
+            )}
           </div>
         </CardFooter>
       </Card>

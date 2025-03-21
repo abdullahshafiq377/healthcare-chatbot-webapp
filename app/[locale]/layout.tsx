@@ -57,7 +57,7 @@ export default async function RootLayout({
           fontSans.variable,
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+        <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
           <NextIntlClientProvider messages={messages}>
             <div className="relative flex flex-col min-h-screen h-full bg-gradient-radial from-white/0 to-lime-500/10 dark:to-lime-500/10 from-60% to-[100%]">
               <Navbar />

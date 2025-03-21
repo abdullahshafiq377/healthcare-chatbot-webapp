@@ -131,9 +131,9 @@ export default function SigninPage() {
           className="border-none bg-background/40 dark:bg-white/5"
         >
           <CardHeader className="py-6 px-5">
-            <div className="flex flex-col gap-4 w-full text-center justify-center">
+            <div className="flex flex-col gap-1 sm:gap-4 w-full text-center justify-center">
               <h1 className={clsx(title({ size: "sm" }))}>{t("title")}</h1>
-              <h2 className="text-md">{t("subtitle")}</h2>
+              <h2 className="text-sm sm:text-md">{t("subtitle")}</h2>
             </div>
           </CardHeader>
           <Divider />

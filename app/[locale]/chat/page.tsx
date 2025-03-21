@@ -8,6 +8,7 @@ import {
   PlusIcon,
   ShareIcon,
   SparklesIcon,
+  XMarkIcon
 } from "@heroicons/react/24/solid";
 import { Divider } from "@heroui/divider";
 import { Textarea } from "@heroui/input";
@@ -45,13 +46,13 @@ export default function ChatPage() {
     isOpen: isShareOpen,
     onOpen: onShareOpen,
     onOpenChange: onShareOpenChange,
-    onClose: onShareClose,
+    onClose: onShareClose
   } = useDisclosure();
 
   const [conversations, setConversations] = useState<CategorizedConversations>({
     today: [],
     last7Days: [],
-    older: [],
+    older: []
   });
   const [isConversationsLoading, setIsConversationsLoading] = useState(false);
   const [selectedConversationId, setSelectedConversationId] = useState<
@@ -64,8 +65,8 @@ export default function ChatPage() {
       updatedAt: new Date().toISOString(),
       text: t("initialMessage"),
       conversationId: "",
-      sender: "bot",
-    },
+      sender: "bot"
+    }
   ]);
   const [messageText, setMessageText] = useState<string>("");
   const [isMessageSentLoading, setIsMessageSentLoading] = useState(false);
@@ -86,7 +87,7 @@ export default function ChatPage() {
       }, 100);
       if (!convoId) {
         const newConversation = await axiosInstance.post("/chat/conversation", {
-          title: messageText,
+          title: messageText
         });
 
         convoId = newConversation?.data?._id;
@@ -102,7 +103,7 @@ export default function ChatPage() {
         updatedAt: new Date().toISOString(),
         text: messageText,
         conversationId: convoId ? convoId : "",
-        sender: "user",
+        sender: "user"
       };
 
       setMessageText("");
@@ -114,7 +115,7 @@ export default function ChatPage() {
       }, 100);
       const res = await axiosInstance.post("/chat/message", {
         conversationId: convoId,
-        text: messageText,
+        text: messageText
       });
 
       if (res?.data) {
@@ -146,7 +147,7 @@ export default function ChatPage() {
       if (selectedConversationId) {
         setIsMessagesLoading(true);
         const res = await axiosInstance.get(
-          `/chat/messages/${selectedConversationId}`,
+          `/chat/messages/${selectedConversationId}`
         );
 
         if (res?.data) {
@@ -157,9 +158,9 @@ export default function ChatPage() {
               updatedAt: new Date().toISOString(),
               text: t("initialMessage"),
               conversationId: "",
-              sender: "bot",
+              sender: "bot"
             },
-            ...res.data,
+            ...res.data
           ]);
           setIsMessagesLoading(false);
           setTimeout(() => {
@@ -177,7 +178,7 @@ export default function ChatPage() {
     try {
       setIsConversationsLoading(true);
       const res = await axiosInstance.get<UserConversationType[]>(
-        "/chat/conversations",
+        "/chat/conversations"
       );
 
       if (res?.data) {
@@ -196,7 +197,7 @@ export default function ChatPage() {
     const categorizedConversations: CategorizedConversations = {
       today: [],
       last7Days: [],
-      older: [],
+      older: []
     };
 
     conversations.forEach((conversation) => {
@@ -225,8 +226,8 @@ export default function ChatPage() {
         updatedAt: new Date().toISOString(),
         text: t("initialMessage"),
         conversationId: "",
-        sender: "bot",
-      },
+        sender: "bot"
+      }
     ]);
     setIsMenuOpen(false);
   };
@@ -243,16 +244,17 @@ export default function ChatPage() {
     if (ref.current) {
       ref.current.scrollTo({
         top: ref.current.scrollHeight,
-        behavior: "smooth",
+        behavior: "smooth"
       });
     }
   };
 
   return (
-    <div className="flex gap-2 h-[calc(100vh-64px-48px)] scroll-smooth flex-col md:flex-row md:gap-5">
+    <div
+      className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 h-[calc(100vh-64px-48px)] scroll-smooth md:gap-5">
       <Card
         isBlurred
-        className="w-1/4 border-none bg-default/10 dark:bg-white/5 hidden md:flex"
+        className="w-full col-span-1 border-none bg-default/10 dark:bg-white/5 hidden md:flex"
       >
         <CardHeader>
           <div className="flex gap-2 justify-center items-center">
@@ -318,7 +320,7 @@ export default function ChatPage() {
           )}
         </CardBody>
       </Card>
-      <div className="flex md:hidden">
+      <div className="flex col-span-2 w-full md:hidden">
         <Navbar
           className="z-0"
           classNames={{ wrapper: "p-0 z-0" }}
@@ -331,8 +333,8 @@ export default function ChatPage() {
               <Card fullWidth>
                 <CardHeader>
                   <span className="flex items-center gap-2">
-                    <CalendarIcon height={20} width={20} />
-                    <span className={"text-lg font-medium"}>
+                    <CalendarIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className={"sm:text-lg font-medium"}>
                       {t("chatHistory")}
                     </span>
                   </span>
@@ -340,22 +342,27 @@ export default function ChatPage() {
               </Card>
             }
           />
-          <NavbarMenu>
-            <Card
-              isHoverable
-              isPressable
-              className="border dark:border-default/50"
-              radius="sm"
-              shadow="sm"
-              onPress={handleNewConversation}
-            >
-              <CardBody>
+          <NavbarMenu className="bg-black/25">
+            <div className="flex justify-between items-stretch">
+              <Card
+                isHoverable
+                isPressable
+                className="border dark:border-default/50 overflow-visible"
+                radius="sm"
+                shadow="sm"
+                onPress={handleNewConversation}
+              >
+                <CardBody>
                 <span className="text-sm font-medium flex gap-2">
-                  <PlusIcon height={20} width={20} />
+                  <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                   {t("startNewConversation")}
                 </span>
-              </CardBody>
-            </Card>
+                </CardBody>
+              </Card>
+              <Button className="bg-background" isIconOnly>
+                <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            </div>
             {conversations.today.length > 0 && (
               <ConversationSection title="Today">
                 {conversations?.today?.map((conversation) => (
@@ -404,11 +411,13 @@ export default function ChatPage() {
           </NavbarMenu>
         </Navbar>
       </div>
-      <Card className="flex w-full md:w-2/4 border-none bg-default/10 dark:bg-white/5">
+      <Card
+        className="flex w-full col-span-2 border-none bg-default/10 dark:bg-white/5">
         <CardHeader>
           <div className="flex gap-2 justify-center items-center">
-            <ChatBubbleLeftRightIcon height={20} width={20} />
-            <span className={"text-lg font-medium"}>{t("conversation")}</span>
+            <ChatBubbleLeftRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span
+              className={"sm:text-lg font-medium"}>{t("conversation")}</span>
           </div>
         </CardHeader>
         <Divider />
@@ -419,12 +428,12 @@ export default function ChatPage() {
           <Loader isLoading={isMessagesLoading} />
           {messages.length > 0
             ? messages?.map((message) =>
-                message?.sender === "user" ? (
-                  <SentMessage key={message?._id} text={message?.text} />
-                ) : (
-                  <ReceivedMessage key={message?._id} text={message?.text} />
-                ),
+              message?.sender === "user" ? (
+                <SentMessage key={message?._id} text={message?.text} />
+              ) : (
+                <ReceivedMessage key={message?._id} text={message?.text} />
               )
+            )
             : ""}
           {isMessageSentLoading && <ReceivedMessage isLoading text="" />}
         </div>
@@ -469,18 +478,21 @@ export default function ChatPage() {
           </div>
         </CardFooter>
       </Card>
-      <div className="flex flex-col gap-4 w-full md:w-1/4">
-        <Card className="flex w-full h-1/3 border dark:border-gray-700 bg-default/10 dark:bg-white/5">
-          <CardHeader>
+      <div className="hidden flex-col gap-4 w-full lg:flex">
+        <Card
+          className="flex w-full h-[35%] border dark:border-gray-700 bg-default/10 dark:bg-white/5">
+          <CardHeader  className="py-2">
             <div className="flex items-center justify-center gap-2">
-              <ShareIcon height={20} width={20} />
-              <span className="text-lg font-semibold">{t("refer.title")}</span>
+              <ShareIcon height={16} width={16} />
+              <span
+                className="text-base font-semibold">{t("refer.title")}</span>
             </div>
           </CardHeader>
           <Divider />
-          <CardBody>
+          <CardBody  className="py-2">
             <div className="flex flex-col gap-2 justify-between h-full">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p
+                className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                 {t("refer.description")}
               </p>
               {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
@@ -489,6 +501,7 @@ export default function ChatPage() {
               <Button
                 className="text-black dark:text-black bg-lime-500 hover:bg-lime-600 transition duration-200 ease-in-out"
                 radius="full"
+                size="sm"
                 onPress={onShareOpen}
               >
                 {t("refer.button")}
@@ -497,19 +510,21 @@ export default function ChatPage() {
           </CardBody>
         </Card>
 
-        <Card className="flex w-full h-1/3 border-none bg-default/10 dark:bg-white/5">
-          <CardHeader>
+        <Card
+          className="flex w-full h-[32.5%] border-none bg-default/10 dark:bg-white/5">
+          <CardHeader  className="py-2">
             <div className="flex gap-2 justify-center items-center">
-              <EnvelopeIcon height={20} width={20} />
-              <span className={"text-lg font-medium"}>
+              <EnvelopeIcon height={16} width={16} />
+              <span className={"text-base font-medium"}>
                 {t("feedback.title")}
               </span>
             </div>
           </CardHeader>
           <Divider />
-          <CardBody>
+          <CardBody  className="py-2">
             <div className="flex flex-col gap-2 justify-between h-full">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p
+                className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                 {t("feedback.description")}
               </p>
               {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
@@ -518,10 +533,10 @@ export default function ChatPage() {
               <Link
                 className={clsx(
                   buttonStyles({
-                    size: "md",
-                    radius: "full",
+                    size: "sm",
+                    radius: "full"
                   }),
-                  "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+                  "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
                 )}
                 href="mailto:info@vaccifi.co?subject=Response%20Feedback"
               >
@@ -530,19 +545,21 @@ export default function ChatPage() {
             </div>
           </CardBody>
         </Card>
-        <Card className="flex w-full h-1/3 border-none bg-default/10 dark:bg-white/5">
-          <CardHeader>
+        <Card
+          className="flex w-full h-[32.5%]  border-none bg-default/10 dark:bg-white/5">
+          <CardHeader className="py-2">
             <div className="flex gap-2 justify-center items-center">
-              <SparklesIcon height={20} width={20} />
-              <span className={"text-lg font-medium"}>
+              <SparklesIcon height={16} width={16} />
+              <span className={"text-base font-medium"}>
                 {t("enhancements.title")}
               </span>
             </div>
           </CardHeader>
           <Divider />
-          <CardBody>
+          <CardBody  className="py-2">
             <div className="flex flex-col gap-2 justify-between h-full">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p
+                className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                 {t("enhancements.description")}
               </p>
               {/*<div className="w-fit p-4 rounded-full mx-auto bg-lime-50 dark:bg-lime-500/20">*/}
@@ -551,10 +568,10 @@ export default function ChatPage() {
               <Link
                 className={clsx(
                   buttonStyles({
-                    size: "md",
-                    radius: "full",
+                    size: "sm",
+                    radius: "full"
                   }),
-                  "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
+                  "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out"
                 )}
                 href="mailto:info@vaccifi.co?subject=Site%20Enhancments"
               >

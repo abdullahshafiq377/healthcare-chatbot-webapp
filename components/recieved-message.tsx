@@ -38,7 +38,7 @@ const ReceivedMessage = ({
   return (
     <div className="flex justify-start items-end">
       <Card className="rounded-tl-none max-w-[280px] md:max-w-md border dark:border-default/50">
-        <CardBody>
+        <CardBody className="text-sm sm:text-base">
           {isLoading ? (
             <div className="flex flex-col gap-3">
               <Skeleton className="w-full rounded-full">

@@ -7,17 +7,19 @@ import { useTheme } from "next-themes";
 import { useIsSSR } from "@react-aria/ssr";
 import clsx from "clsx";
 
-import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
+import { MoonFilledIcon, SunFilledIcon } from "@/components/icons";
 
 export interface ThemeSwitchProps {
   className?: string;
   classNames?: SwitchProps["classNames"];
+  isSmall?: boolean;
 }
 
 export const ThemeSwitch: FC<ThemeSwitchProps> = ({
-  className,
-  classNames,
-}) => {
+                                                    className,
+                                                    classNames,
+                                                    isSmall = false
+                                                  }) => {
   const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
 
@@ -31,11 +33,11 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
     isSelected,
     getBaseProps,
     getInputProps,
-    getWrapperProps,
+    getWrapperProps
   } = useSwitch({
     isSelected: theme === "light" || isSSR,
     "aria-label": `Switch to ${theme === "light" || isSSR ? "dark" : "light"} mode`,
-    onChange,
+    onChange
   });
 
   return (
@@ -44,8 +46,8 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         className: clsx(
           "px-px transition-opacity hover:opacity-80 cursor-pointer",
           className,
-          classNames?.base,
-        ),
+          classNames?.base
+        )
       })}
     >
       <VisuallyHidden>
@@ -64,16 +66,16 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
               "!text-default-500",
               "pt-px",
               "px-0",
-              "mx-0",
+              "mx-0"
             ],
-            classNames?.wrapper,
-          ),
+            classNames?.wrapper
+          )
         })}
       >
         {!isSelected || isSSR ? (
-          <SunFilledIcon size={22} />
+          <SunFilledIcon size={isSmall ? 18 : 22} />
         ) : (
-          <MoonFilledIcon size={22} />
+          <MoonFilledIcon size={isSmall ? 18 : 22} />
         )}
       </div>
     </Component>

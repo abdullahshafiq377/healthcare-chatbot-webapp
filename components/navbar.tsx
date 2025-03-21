@@ -62,11 +62,11 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link
-            className="flex justify-start items-center gap-1 text-foreground"
+            className="flex justify-start items-center text-foreground"
             href="/"
           >
-            <img alt="logo" className="h-10 w-10" src={logo.src} />
-            <p className="font-bold text-inherit">VaxSupport</p>
+            <img alt="logo" className="h-6 w-6 sm:h-10 sm:w-10" src={logo.src} />
+            <p className="text-sm sm:text-medium font-bold text-inherit">VaxSupport</p>
           </Link>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -125,7 +125,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent className="lg:hidden basis-1 pl-4" justify="end">
-        <ThemeSwitch />
+        <ThemeSwitch isSmall/>
         {user ? (
           <ProfileDropdown />
         ) : (
@@ -134,6 +134,7 @@ export const Navbar = () => {
               buttonStyles({
                 radius: "full",
                 variant: "shadow",
+                size: "sm",
               }),
               "text-black dark:text-black bg-lime-500 shadow-lime-500/50 hover:bg-lime-600 transition duration-200 ease-in-out",
             )}

@@ -34,7 +34,7 @@ export default function AdminLayout({
   return (
     <section className="flex flex-col h-full items-center justify-center gap-4">
       <div className="inline-block w-full h-full justify-center py-6">
-        <div className="flex w-full h-full gap-10">
+        <div className="flex flex-col sm:flex-row w-full h-full gap-10">
           <AdminSideNav />
           <Card className="h-[calc(100vh-64px-48px)] w-full">
             <CardBody>{children}</CardBody>

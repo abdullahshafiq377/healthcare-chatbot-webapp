@@ -65,8 +65,14 @@ export const Navbar = () => {
             className="flex justify-start items-center text-foreground"
             href="/"
           >
-            <img alt="logo" className="h-6 w-6 sm:h-10 sm:w-10" src={logo.src} />
-            <p className="text-sm sm:text-medium font-bold text-inherit">VaxSupport</p>
+            <img
+              alt="logo"
+              className="h-6 w-6 sm:h-10 sm:w-10"
+              src={logo.src}
+            />
+            <p className="text-sm sm:text-medium font-bold text-inherit">
+              VaxSupport
+            </p>
           </Link>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -125,7 +131,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent className="lg:hidden basis-1 pl-4" justify="end">
-        <ThemeSwitch isSmall/>
+        <ThemeSwitch isSmall />
         {user ? (
           <ProfileDropdown />
         ) : (

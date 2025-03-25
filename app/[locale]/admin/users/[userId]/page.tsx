@@ -3,12 +3,14 @@ import { Card, CardBody, CardHeader } from "@heroui/card";
 import {
   CalendarIcon,
   ChatBubbleLeftRightIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/solid";
 import { Divider } from "@heroui/divider";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { Navbar, NavbarMenu, NavbarMenuToggle } from "@heroui/navbar";
 import { useParams } from "next/navigation";
+import { Button } from "@heroui/button";
 
 import ConversationSection from "@/components/conversation-section";
 import ConversationItem from "@/components/conversation-item";
@@ -207,7 +209,16 @@ export default function UserDetailsPage() {
               </Card>
             }
           />
-          <NavbarMenu>
+          <NavbarMenu className="bg-black/25">
+            <div className="flex justify-end">
+              <Button
+                isIconOnly
+                className="bg-background"
+                onPress={() => setIsMenuOpen(false)}
+              >
+                <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            </div>
             {conversations.today.length > 0 && (
               <ConversationSection title="Today">
                 {conversations?.today?.map((conversation) => (

@@ -358,7 +358,11 @@ export default function ChatPage() {
                   </span>
                 </CardBody>
               </Card>
-              <Button isIconOnly className="bg-background">
+              <Button
+                isIconOnly
+                className="bg-background"
+                onPress={() => setIsMenuOpen(false)}
+              >
                 <XMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
